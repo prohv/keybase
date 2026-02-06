@@ -30,3 +30,9 @@ export async function getSession(){
         return null;
     }
 }
+
+export async function getCurrentUser() {
+  const session = getSession();
+  if (!session) return null;
+  return session;
+}
