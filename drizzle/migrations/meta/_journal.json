@@ -8,6 +8,13 @@
       "when": 1770374622723,
       "tag": "0000_lazy_sasquatch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770451517263,
+      "tag": "0001_goofy_ulik",
+      "breakpoints": true
     }
   ]
 }

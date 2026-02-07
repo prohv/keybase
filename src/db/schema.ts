@@ -27,6 +27,7 @@ export const apiKeys = pgTable('api_keys', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),
   encryptedKey: text('encrypted_key').notNull(),
+  iv: text('iv').notNull(),
   teamId: integer('team_id').references(() => teams.id),
   createdBy: integer('created_by').references(() => users.id),
   createdAt: timestamp('created_at').defaultNow(),
