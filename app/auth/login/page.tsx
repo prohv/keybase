@@ -9,9 +9,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, KeyRound } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
@@ -19,8 +21,12 @@ export default function LoginPage() {
       const res = await loginAction(formData);
       if (res?.error) {
         toast.error(res.error);
-      } else {
+      } else if (res?.success && res?.redirectTo) {
         toast.success('Successfully logged in!');
+        // Wait a moment for the toast to show, then redirect
+        setTimeout(() => {
+          router.push(res.redirectTo);
+        }, 500);
       }
     } catch (err) {
       console.error('[Login] Submission error:', err);

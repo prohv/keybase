@@ -52,5 +52,5 @@ export async function loginAction(formData: FormData) {
   console.log('[LoginAction] auth_token cookie set successfully');
   console.log('[LoginAction] Token preview:', token.substring(0, 20) + '...');
 
-  redirect('/dashboard');
+  return { success: true, redirectTo: '/dashboard' };
 }

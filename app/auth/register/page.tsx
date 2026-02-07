@@ -9,9 +9,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, ShieldCheck } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
@@ -19,8 +21,12 @@ export default function RegisterPage() {
       const res = await registerAction(formData);
       if (res?.error) {
         toast.error(res.error);
-      } else {
-        toast.success('Account created successfully! Please log in.');
+      } else if (res?.success && res?.redirectTo) {
+        toast.success('Account created successfully!');
+        // Wait a moment for the toast to show, then redirect
+        setTimeout(() => {
+          router.push(res.redirectTo);
+        }, 500);
       }
     } catch (err) {
       console.error('[Register] Submission error:', err);
