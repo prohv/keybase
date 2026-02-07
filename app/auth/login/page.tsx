@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, KeyRound } from 'lucide-react';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +23,6 @@ export default function LoginPage() {
         toast.success('Successfully logged in!');
       }
     } catch (err) {
-      if (isRedirectError(err)) throw err;
       console.error('[Login] Submission error:', err);
       toast.error('An unexpected error occurred');
     } finally {
@@ -90,7 +88,7 @@ export default function LoginPage() {
           </form>
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-center gap-2">
-          <p className="text-sm text-muted-foreground">Don't have an account?</p>
+          <p className="text-sm text-muted-foreground">Dont have an account?</p>
           <Link
             href="/auth/register"
             className="text-sm font-bold text-olive hover:text-forest transition-colors underline underline-offset-4"

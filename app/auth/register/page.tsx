@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, ShieldCheck } from 'lucide-react';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
@@ -24,7 +23,6 @@ export default function RegisterPage() {
         toast.success('Account created successfully! Please log in.');
       }
     } catch (err) {
-      if (isRedirectError(err)) throw err;
       console.error('[Register] Submission error:', err);
       toast.error('An unexpected error occurred');
     } finally {
