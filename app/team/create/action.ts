@@ -7,6 +7,8 @@ import { getCurrentUser } from '@/lib/jwt';
 import { z } from 'zod';
 import crypto from 'crypto';
 
+import { revalidatePath } from 'next/cache';
+
 const createTeamSchema = z.object({
   name: z.string().min(3).max(50),
 });
@@ -50,6 +52,7 @@ export async function createTeamAction(formData: FormData) {
     return team;
   });
 
+  revalidatePath('/dashboard');
   // Return success data
   return { teamCode: newTeam.teamCode };
 }

@@ -54,7 +54,7 @@ export default async function DashboardPage({
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
           <Button asChild className="flex-1 h-24 bg-sage hover:bg-olive text-forest font-bold flex flex-col gap-2">
-            <Link href="/dashboard?action=create">
+            <Link href="/team/create">
               <Plus className="w-6 h-6" />
               <span>Create Team</span>
             </Link>

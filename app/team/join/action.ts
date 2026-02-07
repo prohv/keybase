@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/jwt';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 const joinTeamSchema = z.object({
   code: z.string().min(4).max(12).toUpperCase(),
@@ -54,10 +55,6 @@ export async function joinTeamAction(formData: FormData) {
     teamId: team.id,
   });
 
-  // Optional: make code one-time-use (delete or null it)
-  // await db.update(teams)
-  //   .set({ teamCode: null })
-  //   .where(eq(teams.id, team.id));
-
+  revalidatePath('/dashboard');
   return { success: true, teamName: team.name };
 }

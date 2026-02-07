@@ -77,7 +77,7 @@ export default async function DashboardLayout({
                         <SidebarGroup className="mt-4">
                             <SidebarGroupLabel className="text-forest/60 font-semibold px-4 flex items-center justify-between">
                                 Your Teams
-                                <Link href="/dashboard?action=create" className="hover:text-olive transition-colors">
+                                <Link href="/team/create" className="hover:text-olive transition-colors">
                                     <PlusCircle className="w-4 h-4" />
                                 </Link>
                             </SidebarGroupLabel>
@@ -97,6 +97,14 @@ export default async function DashboardLayout({
                                             </SidebarMenuItem>
                                         ))
                                     )}
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild>
+                                            <Link href="/team/create" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-sage/20 rounded-lg">
+                                                <PlusCircle className="w-4 h-4" />
+                                                <span className="font-medium">Create Team</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link href="/team/join" className="flex items-center gap-3 px-4 py-2 text-olive hover:bg-sage/20 rounded-lg">

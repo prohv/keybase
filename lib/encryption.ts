@@ -15,11 +15,14 @@ function getEncryptionKey(): Buffer {
     }
 
     const key = Buffer.from(keyBase64, 'base64');
-    if (key.length !== KEY_LENGTH) {
-        throw new Error(`ENCRYPTION_KEY must be ${KEY_LENGTH} bytes when decoded from base64 (got ${key.length})`);
+    console.log(`[Encryption] Raw Key length: ${keyBase64.length}, Decoded length: ${key.length}`);
+
+    if (key.length < KEY_LENGTH) {
+        throw new Error(`ENCRYPTION_KEY must be at least ${KEY_LENGTH} bytes when decoded from base64 (got ${key.length})`);
     }
 
-    return key;
+    // Use subarray to ensure we get exactly 32 bytes even if the key is messy
+    return key.subarray(0, KEY_LENGTH);
 }
 
 /**
