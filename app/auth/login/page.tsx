@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2, KeyRound } from 'lucide-react';
+import { isRedirectError } from 'next/dist/client/components/redirect';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,8 @@ export default function LoginPage() {
         toast.success('Successfully logged in!');
       }
     } catch (err) {
+      if (isRedirectError(err)) throw err;
+      console.error('[Login] Submission error:', err);
       toast.error('An unexpected error occurred');
     } finally {
       setLoading(false);

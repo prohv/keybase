@@ -56,5 +56,8 @@ export async function registerAction(formData: FormData) {
     path: '/',
   });
 
+  console.log('[RegisterAction] auth_token cookie set successfully');
+  console.log('[RegisterAction] Token preview:', token.substring(0, 20) + '...');
+
   redirect('/dashboard');
 }

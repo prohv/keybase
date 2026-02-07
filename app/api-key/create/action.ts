@@ -5,12 +5,13 @@ import { apiKeys, teamMembers } from '@/src/db/schema';
 import { getCurrentUser } from '@/lib/jwt';
 import { encrypt } from '@/lib/encryption';
 import { z } from 'zod';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 const createApiKeySchema = z.object({
     name: z.string().min(1, 'Name is required').max(100),
     key: z.string().min(1, 'API Key is required'),
+    teamId: z.string().transform((val) => parseInt(val)),
 });
 
 export async function createApiKeyAction(formData: FormData) {
@@ -22,22 +23,26 @@ export async function createApiKeyAction(formData: FormData) {
     const parsed = createApiKeySchema.safeParse({
         name: formData.get('name'),
         key: formData.get('key'),
+        teamId: formData.get('teamId'),
     });
 
     if (!parsed.success) {
-        return { error: parsed.error.errors[0].message };
+        return { error: parsed.error.issues[0].message };
     }
 
-    const { name, key } = parsed.data;
+    const { name, key, teamId } = parsed.data;
 
     try {
-        // Find the first team the user is a member of
+        // Verify the user is a member of the SPECIFIC team
         const membership = await db.query.teamMembers.findFirst({
-            where: eq(teamMembers.userId, user.userId),
+            where: and(
+                eq(teamMembers.userId, user.userId),
+                eq(teamMembers.teamId, teamId)
+            ),
         });
 
         if (!membership) {
-            return { error: 'You are not a member of any team' };
+            return { error: 'You are not a member of this team' };
         }
 
         const { encrypted, iv } = encrypt(key);
@@ -46,7 +51,7 @@ export async function createApiKeyAction(formData: FormData) {
             name,
             encryptedKey: encrypted,
             iv,
-            teamId: membership.teamId,
+            teamId,
             createdBy: user.userId,
         });
 
