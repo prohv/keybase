@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Plus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createApiKeyAction } from '@/app/api-key/create/action';
+import { getProviderInfo } from '@/lib/providers';
+import { Key } from 'lucide-react';
 
 interface ApiKeyFormProps {
     teamId: number;
@@ -15,6 +17,8 @@ interface ApiKeyFormProps {
 
 export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
     const [loading, setLoading] = useState(false);
+    const [name, setName] = useState('');
+    const provider = getProviderInfo(name);
 
     async function handleSubmit(formData: FormData) {
         setLoading(true);
@@ -48,14 +52,38 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                 <form id="api-key-form" action={handleSubmit} className="space-y-5">
                     <div className="space-y-2">
                         <Label htmlFor="name" className="text-forest font-semibold">Key Identifier</Label>
-                        <Input
-                            id="name"
-                            name="name"
-                            placeholder="e.g. OpenAI Production"
-                            required
-                            disabled={loading}
-                            className="bg-background/50 border-forest/10 focus:ring-sage"
-                        />
+                        <div className="relative group/input">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
+                                {provider ? (
+                                    <div
+                                        className="w-5 h-5 transition-all duration-300"
+                                        style={{
+                                            backgroundColor: provider.color,
+                                            maskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
+                                            maskSize: 'contain',
+                                            maskRepeat: 'no-repeat',
+                                            maskPosition: 'center',
+                                            WebkitMaskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
+                                            WebkitMaskSize: 'contain',
+                                            WebkitMaskRepeat: 'no-repeat',
+                                            WebkitMaskPosition: 'center',
+                                        }}
+                                    />
+                                ) : (
+                                    <Key className="w-5 h-5 text-forest/20 group-focus-within/input:text-forest/40 transition-colors" />
+                                )}
+                            </div>
+                            <Input
+                                id="name"
+                                name="name"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder="e.g. OpenAI Production"
+                                required
+                                disabled={loading}
+                                className="bg-background/50 border-forest/10 focus:ring-sage pl-10"
+                            />
+                        </div>
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="key" className="text-forest font-semibold">API Token</Label>

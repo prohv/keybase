@@ -33,6 +33,7 @@ import {
 import { toast } from 'sonner';
 import { revealApiKeyAction } from '@/app/api-key/reveal/action';
 import { deleteApiKeyAction } from '@/app/api-key/delete/action';
+import { getProviderInfo } from '@/lib/providers';
 
 interface ApiKey {
     id: number;
@@ -119,10 +120,40 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                         initialKeys.map((key) => (
                             <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
                                 <TableCell className="px-6 py-4 font-bold text-forest flex items-center gap-3">
-                                    <div className="p-2 bg-cream rounded-lg border border-forest/10">
-                                        <Key className="w-4 h-4 text-forest/40" />
+                                    <div className="relative group/icon">
+                                        {(() => {
+                                            const provider = getProviderInfo(key.name);
+                                            if (provider) {
+                                                return (
+                                                    <div
+                                                        className="p-2 bg-white rounded-lg border border-forest/10 shadow-sm flex items-center justify-center overflow-hidden"
+                                                        title={`${provider.slug.charAt(0).toUpperCase() + provider.slug.slice(1)} detected`}
+                                                    >
+                                                        <div
+                                                            className="w-5 h-5 transition-transform group-hover/icon:scale-110"
+                                                            style={{
+                                                                backgroundColor: provider.color,
+                                                                maskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
+                                                                maskSize: 'contain',
+                                                                maskRepeat: 'no-repeat',
+                                                                maskPosition: 'center',
+                                                                WebkitMaskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
+                                                                WebkitMaskSize: 'contain',
+                                                                WebkitMaskRepeat: 'no-repeat',
+                                                                WebkitMaskPosition: 'center',
+                                                            }}
+                                                        />
+                                                    </div>
+                                                );
+                                            }
+                                            return (
+                                                <div className="p-2 bg-background rounded-lg border border-forest/10 shadow-sm group-hover/icon:bg-sage/10 transition-colors">
+                                                    <Key className="w-4 h-4 text-forest/40" />
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
-                                    {key.name}
+                                    <span className="truncate">{key.name}</span>
                                 </TableCell>
                                 <TableCell>
                                     <Badge variant="ghost" className="flex items-center gap-1.5 px-0 text-muted-foreground font-medium">
