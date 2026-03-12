@@ -6,7 +6,7 @@ import { createTeamAction } from './action';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Plus, Loader2, ArrowLeft, Shield } from 'lucide-react';
 import Link from 'next/link';
@@ -38,7 +38,7 @@ export default function CreateTeamPage() {
         <div className="min-h-screen flex items-center justify-center p-4 bg-cream bg-[url('/bg-pattern.svg')] bg-cover">
             <div className="fixed inset-0 bg-cream/80 -z-10" />
 
-            <Card className="w-full max-w-md glass-card border-forest/10 shadow-xl">
+            <Card2 className="w-full max-w-md glass-card border-forest/10 shadow-xl">
                 <CardHeader className="text-center space-y-2">
                     <div className="flex justify-center mb-2">
                         <div className="p-4 bg-sage rounded-full shadow-inner ring-4 ring-sage/10">
@@ -98,7 +98,7 @@ export default function CreateTeamPage() {
                         </div>
                     </form>
                 </CardContent>
-            </Card>
+            </Card2>
         </div>
     );
 }

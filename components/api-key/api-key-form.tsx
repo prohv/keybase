@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, Card2, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card2, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createApiKeyAction } from '@/app/api-key/create/action';

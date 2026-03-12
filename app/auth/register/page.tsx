@@ -5,7 +5,7 @@ import { registerAction } from './action';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
@@ -41,7 +41,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-[url('/bg-pattern.svg')] bg-cover">
       <div className="fixed inset-0 bg-cream/80 -z-10" />
 
-      <Card className="w-full max-w-md glass-card border-forest/10">
+      <Card2 className="w-full max-w-md glass-card border-forest/10">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
             <Image src="/keybase-logo.svg" alt="KeyBase" width={64} height={64} className="w-16 h-16" />
@@ -102,7 +102,7 @@ export default function RegisterPage() {
             Access your keys
           </Link>
         </CardFooter>
-      </Card>
+      </Card2>
     </div>
   );
 }
