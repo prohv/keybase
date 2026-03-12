@@ -7,6 +7,19 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
+        "bg-card text-card-foreground flex flex-col rounded-xl border pt-6 pb-0 shadow-sm",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function Card2({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card"
+      className={cn(
         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
         className
       )}
@@ -83,6 +96,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 export {
   Card,
+  Card2,
   CardHeader,
   CardFooter,
   CardTitle,

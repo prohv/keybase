@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, Card2, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createApiKeyAction } from '@/app/api-key/create/action';
@@ -43,7 +43,7 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
     }
 
     return (
-        <Card className="border-forest/10 shadow-sm glass-card">
+        <Card2 className="border-forest/10 shadow-sm glass-card">
             <CardHeader>
                 <CardTitle className="text-xl font-bold text-forest">Add Security Key</CardTitle>
                 <CardDescription>Encrypt and store a new API key in this vault.</CardDescription>
@@ -116,6 +116,6 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                     </Button>
                 </form>
             </CardContent>
-        </Card>
+        </Card2>
     );
 }

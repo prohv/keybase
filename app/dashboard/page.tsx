@@ -113,8 +113,8 @@ export default async function DashboardPage({
 
         {/* Right: API Keys Table */}
         <div className="lg:col-span-2">
-          <Card className="border-forest/10 shadow-sm min-h-[400px] overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6 border-b border-forest/10">
+          <Card className="border-forest/10 shadow-sm min-h-[200px] overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-forest/10">
               <div>
                 <CardTitle className="text-2xl font-bold text-forest">Vault Secrets</CardTitle>
                 <CardDescription>Decrypted keys are never persisted in cleartext.</CardDescription>
