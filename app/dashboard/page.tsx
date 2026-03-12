@@ -3,6 +3,7 @@ import { db } from '@/src/db';
 import { teams, teamMembers } from '@/src/db/schema';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,11 +20,15 @@ import { ApiKeyTable } from '@/components/api-key/api-key-table';
 import { CopyTeamCodeButton } from '@/components/ui/copy-team-code-button';
 import Link from 'next/link';
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: { team?: string };
-}) {
+export const dynamic = 'force-dynamic';
+
+interface DashboardPageProps {
+  searchParams: Promise<{ team?: string }>;
+}
+
+export default async function DashboardPage(props: DashboardPageProps) {
+  const searchParams = await props.searchParams;
+  
   console.log('[DashboardPage] Rendering - checking session');
   const user = await getCurrentUser();
   console.log('[DashboardPage] Session result:', user?.email || 'unauthenticated');
