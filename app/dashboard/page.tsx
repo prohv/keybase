@@ -16,6 +16,7 @@ import {
 import { getApiKeysAction } from '@/app/api-key/list/action';
 import { ApiKeyForm } from '@/components/api-key/api-key-form';
 import { ApiKeyTable } from '@/components/api-key/api-key-table';
+import { CopyTeamCodeButton } from '@/components/ui/copy-team-code-button';
 import Link from 'next/link';
 
 export default async function DashboardPage({
@@ -98,9 +99,7 @@ export default async function DashboardPage({
             <span className="text-xs font-bold text-olive uppercase tracking-widest mr-1">Invite Members (Team Code)</span>
             <div className="flex items-center gap-1 p-1 bg-olive/5 border border-olive/20 rounded-lg">
               <code className="text-2xl font-black text-forest tracking-widest px-4">{activeTeam.teamCode}</code>
-              <Button size="icon" variant="ghost" className="h-10 w-10 text-olive hover:bg-olive/10" title="Copy Code">
-                <Copy className="w-5 h-5" />
-              </Button>
+              <CopyTeamCodeButton code={activeTeam.teamCode} />
             </div>
           </div>
         )}
