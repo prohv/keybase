@@ -119,9 +119,6 @@ export default async function DashboardPage({
                 <CardTitle className="text-2xl font-bold text-forest">Vault Secrets</CardTitle>
                 <CardDescription>Decrypted keys are never persisted in cleartext.</CardDescription>
               </div>
-              <Badge variant="secondary" className="bg-forest/5 text-forest border-forest/10 px-4">
-                {keys.length} Keys
-              </Badge>
             </CardHeader>
             <CardContent className="p-0">
               <ApiKeyTable initialKeys={keys} />

@@ -28,7 +28,9 @@ import {
     Calendar,
     User as UserIcon,
     Loader2,
-    AlertTriangle
+    AlertTriangle,
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { revealApiKeyAction } from '@/app/api-key/reveal/action';
@@ -54,6 +56,11 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
     const [deleteCandidate, setDeleteCandidate] = useState<ApiKey | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const keysPerPage = 4;
+    const totalPages = Math.ceil(initialKeys.length / keysPerPage);
+    const startIndex = (currentPage - 1) * keysPerPage;
+    const paginatedKeys = initialKeys.slice(startIndex, startIndex + keysPerPage);
 
     async function handleReveal(id: number) {
         setRevealingId(id);
@@ -117,7 +124,7 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                             </TableCell>
                         </TableRow>
                     ) : (
-                        initialKeys.map((key) => (
+                        paginatedKeys.map((key) => (
                             <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
                                 <TableCell className="px-6 py-4 font-bold text-forest flex items-center gap-3">
                                     <div className="relative group/icon">
@@ -200,6 +207,50 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                     )}
                 </TableBody>
             </Table>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between px-6 py-4 border-t border-forest/10 bg-forest/[0.01]">
+                    <div className="text-[10px] font-black font-bold text-forest/30 uppercase tracking-[0.2em]">
+                        {initialKeys.length} Total Secrets
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                            disabled={currentPage === 1}
+                        >
+                            <ChevronLeft className="w-4 h-4" />
+                        </Button>
+                        <div className="flex items-center gap-1.5 px-2">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => setCurrentPage(page)}
+                                    className={`w-7 h-7 rounded-md text-[10px] font-bold transition-all border ${
+                                        currentPage === page
+                                            ? 'border-forest/20 text-forest/40'
+                                            : 'border-transparent text-forest/40 hover:bg-sage/5'
+                                    }`}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={currentPage === totalPages}
+                        >
+                            <ChevronRight className="w-4 h-4" />
+                        </Button>
+                    </div>
+                </div>
+            )}
 
             {/* Reveal Dialog */}
             <Dialog open={isRevealOpen} onOpenChange={setIsRevealOpen}>
