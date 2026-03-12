@@ -49,7 +49,7 @@ export default async function DashboardLayout({
     return (
         <SidebarProvider>
             <div className="flex min-h-screen bg-cream w-full">
-                <Sidebar className="border-r border-forest/10">
+                <Sidebar className="border-r border-forest/10 w-60">
                     <SidebarHeader className="p-4 border-b border-forest/10 h-16 flex items-center">
                         <Link href="/dashboard" className="flex items-center gap-2 group">
                             <Image src="/keybase-logo.svg" alt="KeyBase" width={36} height={36} className="w-9 h-9" />
@@ -82,11 +82,8 @@ export default async function DashboardLayout({
                         </SidebarGroup>
 
                         <SidebarGroup className="mt-4">
-                            <SidebarGroupLabel className="text-forest/60 font-semibold px-4 flex items-center justify-between">
+                            <SidebarGroupLabel className="text-forest/60 font-semibold px-4">
                                 Your Teams
-                                <Link href="/team/create" className="hover:text-olive transition-colors">
-                                    <PlusCircle className="w-4 h-4" />
-                                </Link>
                             </SidebarGroupLabel>
                             <SidebarGroupContent className="p-2">
                                 <SidebarMenu>
