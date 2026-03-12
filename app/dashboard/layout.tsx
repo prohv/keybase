@@ -17,7 +17,7 @@ import {
     SidebarInset,
     SidebarTrigger
 } from '@/components/ui/sidebar';
-import { KeyRound, Users, LogOut, LayoutDashboard, PlusCircle, UserPlus } from 'lucide-react';
+import { KeyRound, Users, LogOut, LayoutDashboard, PlusCircle, UserPlus, House } from 'lucide-react';
 import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -61,6 +61,14 @@ export default async function DashboardLayout({
                             <SidebarGroupLabel className="text-forest/60 font-semibold px-4 pt-4">Navigation</SidebarGroupLabel>
                             <SidebarGroupContent className="p-2">
                                 <SidebarMenu>
+                                    <SidebarMenuItem>
+                                        <SidebarMenuButton asChild tooltip="Home">
+                                            <Link href="/" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-sage/20 rounded-lg">
+                                                <House className="w-4 h-4" />
+                                                <span className="font-medium">Home</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild tooltip="Dashboard">
                                             <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-sage/20 rounded-lg">
