@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Loader2, KeyRound } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -43,9 +44,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md glass-card border-forest/10">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
-            <div className="p-3 bg-sage rounded-2xl shadow-lg ring-4 ring-sage/10">
-              <KeyRound className="w-8 h-8 text-forest" />
-            </div>
+            <Image src="/keybase-logo.svg" alt="KeyBase" width={64} height={64} className="w-16 h-16" />
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight text-forest">Welcome Back</CardTitle>
           <CardDescription className="text-muted-foreground text-lg">

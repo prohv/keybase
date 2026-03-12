@@ -11,6 +11,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "KeyBase | Secure Team API Key Vault",
   description: "Securely store and share API keys with your team.",
+  icons: {
+    icon: "/keybase-logo.svg",
+  },
 };
 
 export default function RootLayout({

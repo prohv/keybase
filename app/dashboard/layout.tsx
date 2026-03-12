@@ -18,6 +18,7 @@ import {
     SidebarTrigger
 } from '@/components/ui/sidebar';
 import { KeyRound, Users, LogOut, LayoutDashboard, PlusCircle, UserPlus } from 'lucide-react';
+import Image from 'next/image';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { logoutAction } from '@/app/auth/logout/action';
@@ -51,9 +52,7 @@ export default async function DashboardLayout({
                 <Sidebar className="border-r border-forest/10">
                     <SidebarHeader className="p-4 border-b border-forest/10 h-16 flex items-center">
                         <Link href="/dashboard" className="flex items-center gap-2 group">
-                            <div className="p-2 bg-sage rounded-xl group-hover:bg-olive transition-colors">
-                                <KeyRound className="w-5 h-5 text-forest" />
-                            </div>
+                            <Image src="/keybase-logo.svg" alt="KeyBase" width={36} height={36} className="w-9 h-9" />
                             <span className="font-bold text-xl text-forest tracking-tight">KeyBase</span>
                         </Link>
                     </SidebarHeader>
