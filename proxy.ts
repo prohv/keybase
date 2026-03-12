@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifyToken } from './lib/jwt';
 import { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     const token = request.cookies.get('auth_token')?.value;
     console.log('[Middleware] auth_token present:', !!token);
     /*
