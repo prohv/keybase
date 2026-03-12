@@ -14,8 +14,8 @@ import {
   UserPlus
 } from 'lucide-react';
 import { getApiKeysAction } from '@/app/api-key/list/action';
-import { ApiKeyForm } from '@/components/api-key/ApiKeyForm';
-import { ApiKeyTable } from '@/components/api-key/ApiKeyTable';
+import { ApiKeyForm } from '@/components/api-key/api-key-form';
+import { ApiKeyTable } from '@/components/api-key/api-key-table';
 import Link from 'next/link';
 
 export default async function DashboardPage({
