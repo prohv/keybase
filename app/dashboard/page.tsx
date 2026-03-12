@@ -90,20 +90,20 @@ export default async function DashboardPage(props: DashboardPageProps) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-forest/10">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <h2 className="text-4xl font-extrabold text-forest tracking-tight">{activeTeam.name}</h2>
-            <Badge className="bg-sage text-forest font-bold px-3">Active Vault</Badge>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-forest tracking-tight">{activeTeam.name}</h2>
+            <Badge className="bg-sage text-forest font-bold px-3 text-xs">Vault</Badge>
           </div>
-          <p className="text-muted-foreground flex items-center gap-2 font-medium">
-            <Key className="w-4 h-4 text-forest/40" />
-            Vault ID: <code className="bg-forest/5 px-2 py-0.5 rounded text-forest font-mono">T-{activeTeam.id.toString().padStart(3, '0')}</code>
+          <p className="text-muted-foreground flex items-center gap-2 font-medium text-xs sm:text-sm">
+            <Key className="w-3.5 h-3.5 text-forest/40" />
+            Vault ID: <code className="bg-forest/5 px-1.5 py-0.5 rounded text-forest font-mono">T-{activeTeam.id.toString().padStart(3, '0')}</code>
           </p>
         </div>
 
         {activeTeam.createdBy === user.userId && (
-          <div className="flex flex-col items-end gap-2">
-            <span className="text-xs font-bold text-olive uppercase tracking-widest mr-1">Invite Members (Team Code)</span>
-            <div className="flex items-center gap-1 p-1 bg-olive/5 border border-olive/20 rounded-lg">
-              <code className="text-2xl font-black text-forest tracking-widest px-4">{activeTeam.teamCode}</code>
+          <div className="flex flex-col items-start md:items-end gap-2">
+            <span className="text-[10px] font-bold text-olive uppercase tracking-widest mr-1">Invite Members</span>
+            <div className="flex items-center gap-1 p-1 bg-olive/5 border border-olive/20 rounded-lg w-full sm:w-auto">
+              <code className="text-lg md:text-xl font-black font-bold text-forest tracking-widest px-4 flex-1 text-center font-mono">{activeTeam.teamCode}</code>
               <CopyTeamCodeButton code={activeTeam.teamCode} />
             </div>
           </div>

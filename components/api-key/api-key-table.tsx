@@ -110,10 +110,10 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
             <Table>
                 <TableHeader className="bg-forest/[0.02]">
                     <TableRow className="hover:bg-transparent border-forest/10">
-                        <TableHead className="w-[300px] text-forest font-bold px-6">Identity</TableHead>
-                        <TableHead className="text-forest font-bold">Ownership</TableHead>
-                        <TableHead className="text-forest font-bold">Created</TableHead>
-                        <TableHead className="text-right px-6 text-forest font-bold">Safety</TableHead>
+                        <TableHead className="w-full sm:w-[300px] text-forest font-bold px-4 sm:px-6">Identity</TableHead>
+                        <TableHead className="hidden sm:table-cell text-forest font-bold">Ownership</TableHead>
+                        <TableHead className="hidden sm:table-cell text-forest font-bold">Created</TableHead>
+                        <TableHead className="text-right px-4 sm:px-6 text-forest font-bold">Safety</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -126,18 +126,18 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                     ) : (
                         paginatedKeys.map((key) => (
                             <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
-                                <TableCell className="px-6 py-4 font-bold text-forest flex items-center gap-3">
-                                    <div className="relative group/icon">
+                                <TableCell className="px-4 sm:px-6 py-4 font-bold text-forest flex items-center gap-3">
+                                    <div className="relative group/icon shrink-0">
                                         {(() => {
                                             const provider = getProviderInfo(key.name);
                                             if (provider) {
                                                 return (
                                                     <div
-                                                        className="p-2 bg-white rounded-lg border border-forest/10 shadow-sm flex items-center justify-center overflow-hidden"
+                                                        className="p-1.5 sm:p-2 bg-white rounded-lg border border-forest/10 shadow-sm flex items-center justify-center overflow-hidden"
                                                         title={`${provider.slug.charAt(0).toUpperCase() + provider.slug.slice(1)} detected`}
                                                     >
                                                         <div
-                                                            className="w-5 h-5 transition-transform group-hover/icon:scale-110"
+                                                            className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover/icon:scale-110"
                                                             style={{
                                                                 backgroundColor: provider.color,
                                                                 maskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
@@ -154,52 +154,52 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                                                 );
                                             }
                                             return (
-                                                <div className="p-2 bg-background rounded-lg border border-forest/10 shadow-sm group-hover/icon:bg-sage/10 transition-colors">
-                                                    <Key className="w-4 h-4 text-forest/40" />
+                                                <div className="p-1.5 sm:p-2 bg-background rounded-lg border border-forest/10 shadow-sm group-hover/icon:bg-sage/10 transition-colors">
+                                                    <Key className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-forest/40" />
                                                 </div>
                                             );
                                         })()}
                                     </div>
-                                    <span className="truncate">{key.name}</span>
+                                    <span className="truncate text-sm sm:text-base">{key.name}</span>
                                 </TableCell>
-                                <TableCell>
-                                    <Badge variant="ghost" className="flex items-center gap-1.5 px-0 text-muted-foreground font-medium">
+                                <TableCell className="hidden sm:table-cell">
+                                    <Badge variant="ghost" className="flex items-center gap-1.5 px-0 text-muted-foreground font-medium text-xs">
                                         <UserIcon className="w-3 h-3" />
                                         UID-{key.createdBy}
                                     </Badge>
                                 </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                                <TableCell className="hidden sm:table-cell">
+                                    <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
                                         <Calendar className="w-3 h-3" />
                                         {key.createdAt ? new Date(key.createdAt).toLocaleDateString() : 'N/A'}
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-right px-6 space-x-2">
+                                <TableCell className="text-right px-4 sm:px-6 space-x-1 sm:space-x-2">
                                     <Button
                                         size="icon"
                                         variant="outline"
-                                        className="h-9 w-9 border-forest/10 hover:border-sage hover:bg-sage/10 text-forest"
+                                        className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:border-sage hover:bg-sage/10 text-forest"
                                         title="Reveal Secret"
                                         disabled={revealingId === key.id}
                                         onClick={() => handleReveal(key.id)}
                                     >
                                         {revealingId === key.id ? (
-                                            <Loader2 className="w-4 h-4 animate-spin text-forest" />
+                                            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-forest" />
                                         ) : (
-                                            <Eye className="w-4 h-4" />
+                                            <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                         )}
                                     </Button>
                                     <Button
                                         size="icon"
                                         variant="outline"
-                                        className="h-9 w-9 border-forest/10 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/20 text-muted-foreground"
+                                        className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/20 text-muted-foreground"
                                         title="Delete Key"
                                         onClick={() => {
                                             setDeleteCandidate(key);
                                             setIsDeleteOpen(true);
                                         }}
                                     >
-                                        <Trash2 className="w-4 h-4" />
+                                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                     </Button>
                                 </TableCell>
                             </TableRow>
