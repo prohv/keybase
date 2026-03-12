@@ -236,26 +236,26 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-                <DialogContent className="max-w-sm bg-card border-destructive/20">
+                <DialogContent className="max-w-md bg-cream border-forest/10">
                     <DialogHeader>
-                        <DialogTitle className="text-destructive flex items-center gap-2">
-                            <AlertTriangle className="w-5 h-5" />
+                        <DialogTitle className="text-forest flex items-center gap-2">
+                            <AlertTriangle className="w-5 h-5 text-olive" />
                             Confirm Deletion
                         </DialogTitle>
-                        <DialogDescription className="text-base">
+                        <DialogDescription>
                             Are you sure you want to delete <span className="font-bold text-forest">"{deleteCandidate?.name}"</span>?
                             This action is <span className="text-destructive font-semibold">irreversible</span>.
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter className="mt-6 flex flex-col sm:flex-row gap-2">
-                        <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting}>
+                    <DialogFooter className="mt-6">
+                        <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting} className="border-forest/10 hover:bg-sage/10">
                             Keep Key
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="bg-destructive hover:bg-red-700"
+                            className="bg-destructive hover:bg-red-700 text-white"
                         >
                             {isDeleting ? (
                                 <>
