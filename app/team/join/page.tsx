@@ -62,7 +62,7 @@ export default function JoinTeamPage() {
                 placeholder="A1B2C3D4"
                 required
                 disabled={loading}
-                className="text-center text-2xl font-black tracking-[0.5em] h-16 bg-white/50 border-forest/20 focus:border-sage focus:ring-sage uppercase placeholder:text-forest/10"
+                className="text-center text-2xl font-black tracking-[0.5em] h-16 bg-background/50 border-forest/20 focus:border-sage focus:ring-sage uppercase placeholder:text-forest/10"
               />
               <p className="text-xs text-muted-foreground text-center italic">
                 Get this 8-character code from your team administrator.

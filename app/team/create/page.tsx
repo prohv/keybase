@@ -65,7 +65,7 @@ export default function CreateTeamPage() {
                                     placeholder="e.g. Engineering Alpha"
                                     required
                                     disabled={loading}
-                                    className="pl-10 h-14 bg-white/50 border-forest/20 focus:border-sage focus:ring-sage text-lg font-medium"
+                                    className="pl-10 h-14 bg-background/50 border-forest/20 focus:border-sage focus:ring-sage text-lg font-medium"
                                 />
                             </div>
                             <p className="text-xs text-muted-foreground italic">

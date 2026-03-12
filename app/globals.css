@@ -45,55 +45,56 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  --color-sage: #A8B5A2;
-  --color-olive: #556B2F;
-  --color-cream: #FDFBF7;
-  --color-forest: #1A3C34;
+  --color-sage: #99BC85;
+  --color-pale-sage: #E4EFE7;
+  --color-cream: #FAFAFA;
+  --color-beige: #FAF1E6;
+  --color-forest: #2D3E31;
+  --color-olive: #4F6F52;
   --color-slate: #64748B;
   --color-muted-text: #94A3B8;
 }
 
 :root {
   --radius: 0.75rem;
-  --background: #FDFBF7; /* Cream */
-  --foreground: #1A3C34; /* Forest */
-  --card: #FDFBF7;
-  --card-foreground: #1A3C34;
-  --popover: #FDFBF7;
-  --popover-foreground: #1A3C34;
-  --primary: #A8B5A2; /* Sage */
-  --primary-foreground: #FDFBF7;
-  --secondary: #556B2F; /* Olive */
-  --secondary-foreground: #FDFBF7;
-  --muted: #F1F5F9;
-  --muted-foreground: #64748B; /* Slate */
-  --accent: #A8B5A2;
-  --accent-foreground: #1A3C34;
+  --background: #FAFAFA; /* Off-white */
+  --foreground: #2D3E31; /* Forest */
+  --card: #FAF1E6; /* Beige */
+  --card-foreground: #2D3E31;
+  --popover: #FAF1E6;
+  --popover-foreground: #2D3E31;
+  --primary: #99BC85; /* Sage */
+  --primary-foreground: #FDFAF6;
+  --secondary: #E4EFE7; /* Pale Sage */
+  --secondary-foreground: #2D3E31;
+  --muted: #E4EFE7;
+  --muted-foreground: #4F6F52; /* Olive */
+  --accent: #99BC85;
+  --accent-foreground: #2D3E31;
   --destructive: #EF4444;
-  --border: #1A3C34 / 0.1;
-  --input: #1A3C34 / 0.1;
-  --ring: #A8B5A2;
-  --radius: 0.75rem;
+  --border: #2D3E31 / 0.1;
+  --input: #2D3E31 / 0.1;
+  --ring: #99BC85;
 }
 
 .dark {
-  --background: #1A3C34;
-  --foreground: #FDFBF7;
-  --card: #1A3C34;
-  --card-foreground: #FDFBF7;
-  --popover: #1A3C34;
-  --popover-foreground: #FDFBF7;
-  --primary: #A8B5A2;
-  --primary-foreground: #1A3C34;
-  --secondary: #556B2F;
-  --secondary-foreground: #FDFBF7;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #A8B5A2;
-  --accent-foreground: #1A3C34;
-  --border: #FDFBF7 / 0.2;
-  --input: #FDFBF7 / 0.2;
-  --ring: #A8B5A2;
+  --background: #1A281A;
+  --foreground: #FDFAF6;
+  --card: #243524;
+  --card-foreground: #FDFAF6;
+  --popover: #1A281A;
+  --popover-foreground: #FDFAF6;
+  --primary: #99BC85;
+  --primary-foreground: #1A281A;
+  --secondary: #4F6F52;
+  --secondary-foreground: #FDFAF6;
+  --muted: #243524;
+  --muted-foreground: #E4EFE7 / 0.6;
+  --accent: #99BC85;
+  --accent-foreground: #1A281A;
+  --border: #FDFAF6 / 0.2;
+  --input: #FDFAF6 / 0.2;
+  --ring: #99BC85;
 }
 
 @layer base {
@@ -107,10 +108,10 @@
 
 @layer utilities {
   .glass {
-    @apply backdrop-blur-md bg-white/10 border border-white/20;
+    @apply backdrop-blur-md bg-background/10 border border-foreground/10;
   }
   .glass-card {
-    @apply backdrop-blur-lg bg-white/40 border border-white/20 shadow-xl;
+    @apply backdrop-blur-lg bg-card/60 border border-foreground/10 shadow-xl;
   }
 }
 

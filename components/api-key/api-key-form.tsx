@@ -54,7 +54,7 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                             placeholder="e.g. OpenAI Production"
                             required
                             disabled={loading}
-                            className="bg-white/50 border-forest/10 focus:ring-sage"
+                            className="bg-background/50 border-forest/10 focus:ring-sage"
                         />
                     </div>
                     <div className="space-y-2">
@@ -66,7 +66,7 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                             placeholder="sk-..."
                             required
                             disabled={loading}
-                            className="bg-white/50 border-forest/10 focus:ring-sage"
+                            className="bg-background/50 border-forest/10 focus:ring-sage"
                         />
                     </div>
                     <Button

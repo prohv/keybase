@@ -205,7 +205,7 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-                <DialogContent className="max-w-sm bg-white border-destructive/20">
+                <DialogContent className="max-w-sm bg-card border-destructive/20">
                     <DialogHeader>
                         <DialogTitle className="text-destructive flex items-center gap-2">
                             <AlertTriangle className="w-5 h-5" />

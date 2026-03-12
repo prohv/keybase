@@ -62,7 +62,7 @@ export default function RegisterPage() {
                 type="email"
                 placeholder="name@example.com"
                 required
-                className="bg-white/50 border-forest/10 focus:border-sage focus:ring-sage"
+                className="bg-background/50 border-forest/10 focus:border-sage focus:ring-sage"
               />
             </div>
             <div className="space-y-2">
@@ -72,7 +72,7 @@ export default function RegisterPage() {
                 name="password"
                 type="password"
                 required
-                className="bg-white/50 border-forest/10 focus:border-sage focus:ring-sage"
+                className="bg-background/50 border-forest/10 focus:border-sage focus:ring-sage"
               />
               <p className="text-xs text-muted-foreground italic">
                 Password should be at least 6 characters.
