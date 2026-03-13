@@ -10,6 +10,13 @@ import {
     TableRow
 } from '@/components/ui/table';
 import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from '@/components/ui/card';
+import {
     Dialog,
     DialogContent,
     DialogDescription,
@@ -61,8 +68,10 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
     const allKeys = data?.pages.flatMap(page => page.keys) || [];
     const loadedPagesCount = data?.pages.length || 0;
+    const totalKeys = data?.pages[0]?.total || 0;
 
     const keysPerPage = 4;
+    const totalPages = Math.ceil(totalKeys / keysPerPage) || 1;
     const startIndex = (viewingPage - 1) * keysPerPage;
     const currentPageKeys = allKeys.slice(startIndex, startIndex + keysPerPage);
 
@@ -75,7 +84,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
     async function handleNextPage() {
         if (viewingPage < loadedPagesCount) {
             setViewingPage(prev => prev + 1);
-        } else if (hasNextPage && !isFetchingNextPage) {
+        } else if (viewingPage < totalPages && hasNextPage && !isFetchingNextPage) {
             await fetchNextPage();
             setViewingPage(prev => prev + 1);
         }
@@ -134,7 +143,22 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
     return (
         <>
-            <Table>
+            <Card className="border-forest/10 shadow-sm min-h-[200px] overflow-hidden">
+            <CardHeader className="flex flex-row items-end justify-between space-y-0 pb-3 border-b border-forest/10">
+                <div className="flex-1">
+                    <CardTitle className="text-2xl font-bold text-forest">Vault Secrets</CardTitle>
+                    <CardDescription>Decrypted keys are never persisted in cleartext.</CardDescription>
+                </div>
+                {totalKeys > 0 && (
+                    <div className="flex items-center bg-background/50 border border-forest/10 rounded-full px-3 py-1">
+                        <span className="text-[10px] font-black text-forest/40 uppercase tracking-widest leading-none">
+                            Total Keys : <span className="text-forest ml-1">{totalKeys}</span>
+                        </span>
+                    </div>
+                )}
+            </CardHeader>
+            <CardContent className="p-0">
+                <Table>
                 <TableHeader className="bg-forest/[0.02]">
                     <TableRow className="hover:bg-transparent border-forest/10">
                         <TableHead className="w-full sm:w-[300px] text-forest font-bold px-4 sm:px-6">Identity</TableHead>
@@ -239,10 +263,10 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
             </Table>
 
             {/* Pagination Controls */}
-            {loadedPagesCount > 0 && (
+            {totalPages > 0 && (
                 <div className="flex items-center justify-between px-6 py-4 border-t border-forest/10 bg-forest/[0.01]">
                     <div className="text-[10px] font-black font-bold text-forest/30 uppercase tracking-[0.2em]">
-                        Page {viewingPage} of {loadedPagesCount}
+                        Page {viewingPage} of {totalPages}
                     </div>
                     <div className="flex items-center gap-1">
                         <Button
@@ -277,13 +301,15 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                             size="icon-sm"
                             className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
                             onClick={handleNextPage}
-                            disabled={!hasNextPage && viewingPage >= loadedPagesCount}
+                            disabled={viewingPage >= totalPages}
                         >
                             <ChevronRight className="w-4 h-4" />
                         </Button>
                     </div>
                 </div>
             )}
+            </CardContent>
+        </Card>
 
             {/* Reveal Dialog */}
             <Dialog open={isRevealOpen} onOpenChange={setIsRevealOpen}>

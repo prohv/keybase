@@ -3,7 +3,7 @@
 import { db } from '@/src/db';
 import { apiKeys, teamMembers, teams } from '@/src/db/schema';
 import { getCurrentUser } from '@/lib/jwt';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, count } from 'drizzle-orm';
 
 export async function fetchApiKeys(teamId: number, page: number = 1, limit: number = 4) {
     const user = await getCurrentUser();
@@ -40,17 +40,18 @@ export async function fetchApiKeys(teamId: number, page: number = 1, limit: numb
 
         // Get total count for this team
         const totalResult = await db
-            .select({ count: apiKeys.id })
+            .select({ value: count() })
             .from(apiKeys)
             .where(eq(apiKeys.teamId, teamId as any));
         
-        const total = totalResult.length;
+        const total = Number(totalResult[0].value);
         const hasMore = offset + keys.length < total;
 
         return {
             keys,
             page,
             hasMore,
+            total,
         };
     } catch (error) {
         console.error('Failed to fetch API keys:', error);

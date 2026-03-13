@@ -4,7 +4,6 @@ import { teams, teamMembers } from '@/src/db/schema';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -118,17 +117,7 @@ export default async function DashboardPage(props: DashboardPageProps) {
 
         {/* Right: API Keys Table */}
         <div className="lg:col-span-2">
-          <Card className="border-forest/10 shadow-sm min-h-[200px] overflow-hidden">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b border-forest/10">
-              <div>
-                <CardTitle className="text-2xl font-bold text-forest">Vault Secrets</CardTitle>
-                <CardDescription>Decrypted keys are never persisted in cleartext.</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="p-0">
-              <ApiKeyTable teamId={activeTeam.id} />
-            </CardContent>
-          </Card>
+          <ApiKeyTable teamId={activeTeam.id} />
         </div>
       </div>
     </div>
