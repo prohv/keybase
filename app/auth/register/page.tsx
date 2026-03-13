@@ -1,40 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { registerAction } from './action';
+import { useRegisterMutation } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 export default function RegisterPage() {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const registerMutation = useRegisterMutation();
 
   async function handleSubmit(formData: FormData) {
-    setLoading(true);
-    try {
-      const res = await registerAction(formData);
-      if (res?.error) {
-        toast.error(res.error);
-      } else if (res?.success && res?.redirectTo) {
-        toast.success('Account created successfully!');
-        // Wait a moment for the toast to show, then redirect
-        setTimeout(() => {
-          router.push(res.redirectTo);
-        }, 500);
-      }
-    } catch (err) {
-      console.error('[Register] Submission error:', err);
-      toast.error('An unexpected error occurred');
-    } finally {
-      setLoading(false);
-    }
+    registerMutation.mutate(formData);
   }
 
   return (
@@ -80,9 +61,9 @@ export default function RegisterPage() {
             <Button
               type="submit"
               className="w-full bg-sage hover:bg-olive text-forest font-bold py-6 text-lg transition-all active:scale-[0.98]"
-              disabled={loading}
+              disabled={registerMutation.isPending}
             >
-              {loading ? (
+              {registerMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   Creating Account...

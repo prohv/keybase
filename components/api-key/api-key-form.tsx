@@ -5,41 +5,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card2, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { createApiKeyAction } from '@/app/api-key/create/action';
+import { Plus, Loader2, Key } from 'lucide-react';
+import { useCreateApiKeyMutation } from '@/hooks/use-api-keys';
 import { getProviderInfo } from '@/lib/providers';
-import { Key } from 'lucide-react';
 
 interface ApiKeyFormProps {
     teamId: number;
 }
 
 export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
-    const [loading, setLoading] = useState(false);
     const [name, setName] = useState('');
     const provider = getProviderInfo(name);
+    const createMutation = useCreateApiKeyMutation();
 
     async function handleSubmit(formData: FormData) {
-        setLoading(true);
-        try {
-            // Add teamId to formData
-            formData.append('teamId', teamId.toString());
-
-            const res = await createApiKeyAction(formData);
-
-            if (res?.error) {
-                toast.error(res.error);
-            } else {
-                toast.success('API Key successfully encrypted and stored.');
-                // Reset form
+        formData.append('teamId', teamId.toString());
+        createMutation.mutate(formData, {
+            onSuccess: () => {
                 (document.getElementById('api-key-form') as HTMLFormElement)?.reset();
+                setName('');
             }
-        } catch (err) {
-            toast.error('An unexpected error occurred while saving the key.');
-        } finally {
-            setLoading(false);
-        }
+        });
     }
 
     return (
@@ -80,7 +66,7 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder="e.g. OpenAI Production"
                                 required
-                                disabled={loading}
+                                disabled={createMutation.isPending}
                                 className="bg-background/50 border-forest/10 focus:ring-sage pl-10"
                             />
                         </div>
@@ -93,16 +79,16 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                             type="password"
                             placeholder="sk-..."
                             required
-                            disabled={loading}
+                            disabled={createMutation.isPending}
                             className="bg-background/50 border-forest/10 focus:ring-sage"
                         />
                     </div>
                     <Button
                         type="submit"
                         className="w-full bg-sage hover:bg-olive text-forest font-bold transition-all shadow-md"
-                        disabled={loading}
+                        disabled={createMutation.isPending}
                     >
-                        {loading ? (
+                        {createMutation.isPending ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Encrypting...

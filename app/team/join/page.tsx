@@ -1,36 +1,20 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { joinTeamAction } from './action';
+import { useJoinTeamMutation } from '@/hooks/use-team';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
 import { UserPlus, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function JoinTeamPage() {
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const joinTeamMutation = useJoinTeamMutation();
 
   async function handleSubmit(formData: FormData) {
-    setLoading(true);
-    try {
-      const result = await joinTeamAction(formData);
-
-      if (result.error) {
-        toast.error(result.error);
-      } else if (result.success) {
-        toast.success(`Successfully joined team: ${result.teamName}!`);
-        setTimeout(() => router.push('/dashboard'), 1000);
-      }
-    } catch (err) {
-      toast.error('An unexpected error occurred while joining the team.');
-    } finally {
-      setLoading(false);
-    }
+    joinTeamMutation.mutate(formData);
   }
 
   return (
@@ -61,7 +45,7 @@ export default function JoinTeamPage() {
                 type="text"
                 placeholder="A1B2C3D4"
                 required
-                disabled={loading}
+                disabled={joinTeamMutation.isPending}
                 className="text-center text-2xl font-black tracking-[0.5em] h-16 bg-background/50 border-forest/20 focus:border-sage focus:ring-sage uppercase placeholder:text-forest/10"
               />
               <p className="text-xs text-muted-foreground text-center italic">
@@ -73,9 +57,9 @@ export default function JoinTeamPage() {
               <Button
                 type="submit"
                 className="w-full bg-forest hover:bg-forest/90 text-cream h-14 text-lg font-bold shadow-lg transition-all active:scale-[0.98]"
-                disabled={loading}
+                disabled={joinTeamMutation.isPending}
               >
-                {loading ? (
+                {joinTeamMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                     Verifying Access...

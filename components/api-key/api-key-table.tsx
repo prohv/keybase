@@ -34,9 +34,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { revealApiKeyAction } from '@/app/api-key/reveal/action';
-import { deleteApiKeyAction } from '@/app/api-key/delete/action';
 import { getProviderInfo } from '@/lib/providers';
-import { useApiKeys } from '@/hooks/use-api-keys';
+import { useApiKeys, useDeleteApiKeyMutation } from '@/hooks/use-api-keys';
 
 interface ApiKeyTableProps {
     teamId: number;
@@ -48,7 +47,6 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
     const [isRevealOpen, setIsRevealOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [deleteCandidate, setDeleteCandidate] = useState<{ id: number; name: string } | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
     const [copied, setCopied] = useState(false);
     const [viewingPage, setViewingPage] = useState(1);
 
@@ -100,29 +98,21 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
         }
     }
 
+    const deleteMutation = useDeleteApiKeyMutation(teamId);
+
     async function handleDelete() {
         if (!deleteCandidate) return;
-        setIsDeleting(true);
-        try {
-            const res = await deleteApiKeyAction(deleteCandidate.id);
-            if (res.success) {
-                toast.success('API Key deleted permanently.');
+        deleteMutation.mutate(deleteCandidate.id, {
+            onSuccess: () => {
                 setIsDeleteOpen(false);
-            } else {
-                toast.error(res.error || 'Failed to delete key');
             }
-        } catch (err) {
-            toast.error('Unexpected error during deletion');
-        } finally {
-            setIsDeleting(false);
-        }
+        });
     }
 
     function copyToClipboard() {
         if (!revealedValue) return;
         navigator.clipboard.writeText(revealedValue);
         setCopied(true);
-        toast.success('Copied to clipboard!');
         setTimeout(() => setCopied(false), 2000);
     }
 
@@ -161,86 +151,89 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                             </TableCell>
                         </TableRow>
                     ) : (
-                        currentPageKeys.map((key) => (
-                            <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
-                                <TableCell className="px-4 sm:px-6 py-4 font-bold text-forest flex items-center gap-3">
-                                    <div className="relative group/icon shrink-0">
-                                        {(() => {
-                                            const provider = getProviderInfo(key.name);
-                                            if (provider) {
-                                                return (
-                                                    <div
-                                                        className="p-1.5 sm:p-2 bg-white rounded-lg border border-forest/10 shadow-sm flex items-center justify-center overflow-hidden"
-                                                        title={`${provider.slug.charAt(0).toUpperCase() + provider.slug.slice(1)} detected`}
-                                                    >
+                        currentPageKeys.map((key) => {
+                            if (!key) return null;
+                            return (
+                                <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
+                                    <TableCell className="px-4 sm:px-6 py-4 font-bold text-forest flex items-center gap-3">
+                                        <div className="relative group/icon shrink-0">
+                                            {(() => {
+                                                const provider = getProviderInfo(key.name);
+                                                if (provider) {
+                                                    return (
                                                         <div
-                                                            className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover/icon:scale-110"
-                                                            style={{
-                                                                backgroundColor: provider.color,
-                                                                maskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
-                                                                maskSize: 'contain',
-                                                                maskRepeat: 'no-repeat',
-                                                                maskPosition: 'center',
-                                                                WebkitMaskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
-                                                                WebkitMaskSize: 'contain',
-                                                                WebkitMaskRepeat: 'no-repeat',
-                                                                WebkitMaskPosition: 'center',
-                                                            }}
-                                                        />
+                                                            className="p-1.5 sm:p-2 bg-white rounded-lg border border-forest/10 shadow-sm flex items-center justify-center overflow-hidden"
+                                                            title={`${provider.slug.charAt(0).toUpperCase() + provider.slug.slice(1)} detected`}
+                                                        >
+                                                            <div
+                                                                className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover/icon:scale-110"
+                                                                style={{
+                                                                    backgroundColor: provider.color,
+                                                                    maskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
+                                                                    maskSize: 'contain',
+                                                                    maskRepeat: 'no-repeat',
+                                                                    maskPosition: 'center',
+                                                                    WebkitMaskImage: `url(https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/${provider.slug}.svg)`,
+                                                                    WebkitMaskSize: 'contain',
+                                                                    WebkitMaskRepeat: 'no-repeat',
+                                                                    WebkitMaskPosition: 'center',
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    );
+                                                }
+                                                return (
+                                                    <div className="p-1.5 sm:p-2 bg-background rounded-lg border border-forest/10 shadow-sm group-hover/icon:bg-sage/10 transition-colors">
+                                                        <Key className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-forest/40" />
                                                     </div>
                                                 );
-                                            }
-                                            return (
-                                                <div className="p-1.5 sm:p-2 bg-background rounded-lg border border-forest/10 shadow-sm group-hover/icon:bg-sage/10 transition-colors">
-                                                    <Key className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-forest/40" />
-                                                </div>
-                                            );
-                                        })()}
-                                    </div>
-                                    <span className="truncate text-sm sm:text-base">{key.name}</span>
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                    <Badge variant="ghost" className="flex items-center gap-1.5 px-0 text-muted-foreground font-medium text-xs">
-                                        <UserIcon className="w-3 h-3" />
-                                        UID-{key.createdBy}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                    <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-                                        <Calendar className="w-3 h-3" />
-                                        {key.createdAt ? new Date(key.createdAt).toLocaleDateString() : 'N/A'}
-                                    </div>
-                                </TableCell>
-                                <TableCell className="text-right px-4 sm:px-6 space-x-1 sm:space-x-2">
-                                    <Button
-                                        size="icon"
-                                        variant="outline"
-                                        className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:border-sage hover:bg-sage/10 text-forest"
-                                        title="Reveal Secret"
-                                        disabled={revealingId === key.id}
-                                        onClick={() => handleReveal(key.id)}
-                                    >
-                                        {revealingId === key.id ? (
-                                            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-forest" />
-                                        ) : (
-                                            <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                        )}
-                                    </Button>
-                                    <Button
-                                        size="icon"
-                                        variant="outline"
-                                        className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/20 text-muted-foreground"
-                                        title="Delete Key"
-                                        onClick={() => {
-                                            setDeleteCandidate(key);
-                                            setIsDeleteOpen(true);
-                                        }}
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))
+                                            })()}
+                                        </div>
+                                        <span className="truncate text-sm sm:text-base">{key.name}</span>
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">
+                                        <Badge variant="ghost" className="flex items-center gap-1.5 px-0 text-muted-foreground font-medium text-xs">
+                                            <UserIcon className="w-3 h-3" />
+                                            UID-{key.createdBy}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">
+                                        <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                            <Calendar className="w-3 h-3" />
+                                            {key.createdAt ? new Date(key.createdAt).toLocaleDateString() : 'N/A'}
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-right px-4 sm:px-6 space-x-1 sm:space-x-2">
+                                        <Button
+                                            size="icon"
+                                            variant="outline"
+                                            className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:border-sage hover:bg-sage/10 text-forest"
+                                            title="Reveal Secret"
+                                            disabled={revealingId === key.id}
+                                            onClick={() => handleReveal(key.id)}
+                                        >
+                                            {revealingId === key.id ? (
+                                                <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-forest" />
+                                            ) : (
+                                                <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                            )}
+                                        </Button>
+                                        <Button
+                                            size="icon"
+                                            variant="outline"
+                                            className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:bg-destructive/5 hover:text-destructive hover:border-destructive/20 text-muted-foreground"
+                                            title="Delete Key"
+                                            onClick={() => {
+                                                setDeleteCandidate(key);
+                                                setIsDeleteOpen(true);
+                                            }}
+                                        >
+                                            <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            );
+                        })
                     )}
                 </TableBody>
             </Table>
@@ -339,16 +332,16 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="mt-6">
-                        <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={isDeleting} className="border-forest/10 hover:bg-sage/10">
+                        <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={deleteMutation.isPending} className="border-forest/10 hover:bg-sage/10">
                             Keep Key
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={handleDelete}
-                            disabled={isDeleting}
+                            disabled={deleteMutation.isPending}
                             className="bg-destructive hover:bg-red-700 text-white"
                         >
-                            {isDeleting ? (
+                            {deleteMutation.isPending ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Deleting...
