@@ -90,6 +90,12 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
         }
     }
 
+    const handleMouseEnterNext = () => {
+        if (viewingPage === loadedPagesCount && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    };
+
     async function handleReveal(id: number) {
         setRevealingId(id);
         try {
@@ -301,6 +307,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                             size="icon-sm"
                             className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
                             onClick={handleNextPage}
+                            onMouseEnter={handleMouseEnterNext}
                             disabled={viewingPage >= totalPages}
                         >
                             <ChevronRight className="w-4 h-4" />
