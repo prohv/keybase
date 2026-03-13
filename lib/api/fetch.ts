@@ -5,7 +5,7 @@ import { apiKeys, teamMembers, teams } from '@/src/db/schema';
 import { getCurrentUser } from '@/lib/jwt';
 import { eq, and, desc } from 'drizzle-orm';
 
-export async function fetchApiKeys(teamId: number, page: number = 1, limit: number = 10) {
+export async function fetchApiKeys(teamId: number, page: number = 1, limit: number = 4) {
     const user = await getCurrentUser();
     if (!user) {
         return { error: 'Authentication required' };
@@ -38,13 +38,17 @@ export async function fetchApiKeys(teamId: number, page: number = 1, limit: numb
             offset,
         });
 
-        const total = await db.select({ count: eq(apiKeys.id, apiKeys.id) }).from(apiKeys)
+        // Get total count for this team
+        const totalResult = await db
+            .select({ count: apiKeys.id })
+            .from(apiKeys)
             .where(eq(apiKeys.teamId, teamId as any));
+        
+        const total = totalResult.length;
+        const hasMore = offset + keys.length < total;
 
-        const hasMore = offset + keys.length < (total[0] as any).count;
-
-        return { 
-            keys, 
+        return {
+            keys,
             page,
             hasMore,
         };

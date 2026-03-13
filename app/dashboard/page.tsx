@@ -126,7 +126,7 @@ export default async function DashboardPage(props: DashboardPageProps) {
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <ApiKeyTable initialKeys={keys} />
+              <ApiKeyTable teamId={activeTeam.id} />
             </CardContent>
           </Card>
         </div>

@@ -8,7 +8,7 @@ export function useApiKeys(teamId: number) {
     return useInfiniteQuery({
         queryKey: ['api-keys', teamId],
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetchApiKeys(teamId, pageParam, 10);
+            const result = await fetchApiKeys(teamId, pageParam, 4);
             if (result.error) throw new Error(result.error);
             return result;
         },

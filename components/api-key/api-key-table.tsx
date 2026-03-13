@@ -36,31 +36,52 @@ import { toast } from 'sonner';
 import { revealApiKeyAction } from '@/app/api-key/reveal/action';
 import { deleteApiKeyAction } from '@/app/api-key/delete/action';
 import { getProviderInfo } from '@/lib/providers';
-
-interface ApiKey {
-    id: number;
-    name: string;
-    createdBy: number | null;
-    createdAt: Date | null;
-}
+import { useApiKeys } from '@/hooks/use-api-keys';
 
 interface ApiKeyTableProps {
-    initialKeys: ApiKey[];
+    teamId: number;
 }
 
-export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
+export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
     const [revealingId, setRevealingId] = useState<number | null>(null);
     const [revealedValue, setRevealedValue] = useState<string | null>(null);
     const [isRevealOpen, setIsRevealOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-    const [deleteCandidate, setDeleteCandidate] = useState<ApiKey | null>(null);
+    const [deleteCandidate, setDeleteCandidate] = useState<{ id: number; name: string } | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
+    const [viewingPage, setViewingPage] = useState(1);
+
+    const {
+        data,
+        isLoading,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useApiKeys(teamId);
+
+    const allKeys = data?.pages.flatMap(page => page.keys) || [];
+    const loadedPagesCount = data?.pages.length || 0;
+
     const keysPerPage = 4;
-    const totalPages = Math.ceil(initialKeys.length / keysPerPage);
-    const startIndex = (currentPage - 1) * keysPerPage;
-    const paginatedKeys = initialKeys.slice(startIndex, startIndex + keysPerPage);
+    const startIndex = (viewingPage - 1) * keysPerPage;
+    const currentPageKeys = allKeys.slice(startIndex, startIndex + keysPerPage);
+
+    async function handlePreviousPage() {
+        if (viewingPage > 1) {
+            setViewingPage(prev => prev - 1);
+        }
+    }
+
+    async function handleNextPage() {
+        if (viewingPage < loadedPagesCount) {
+            setViewingPage(prev => prev + 1);
+        } else if (hasNextPage && !isFetchingNextPage) {
+            await fetchNextPage();
+            setViewingPage(prev => prev + 1);
+        }
+    }
 
     async function handleReveal(id: number) {
         setRevealingId(id);
@@ -105,6 +126,22 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
         setTimeout(() => setCopied(false), 2000);
     }
 
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-40">
+                <Loader2 className="w-8 h-8 animate-spin text-forest" />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-40 text-destructive">
+                Failed to load API keys
+            </div>
+        );
+    }
+
     return (
         <>
             <Table>
@@ -117,14 +154,14 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {initialKeys.length === 0 ? (
+                    {currentPageKeys.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={4} className="h-40 text-center text-muted-foreground italic">
                                 The vault is currently empty.
                             </TableCell>
                         </TableRow>
                     ) : (
-                        paginatedKeys.map((key) => (
+                        currentPageKeys.map((key) => (
                             <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
                                 <TableCell className="px-4 sm:px-6 py-4 font-bold text-forest flex items-center gap-3">
                                     <div className="relative group/icon shrink-0">
@@ -209,28 +246,28 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
             </Table>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
+            {loadedPagesCount > 0 && (
                 <div className="flex items-center justify-between px-6 py-4 border-t border-forest/10 bg-forest/[0.01]">
                     <div className="text-[10px] font-black font-bold text-forest/30 uppercase tracking-[0.2em]">
-                        {initialKeys.length} Total Secrets
+                        Page {viewingPage} of {loadedPagesCount}
                     </div>
                     <div className="flex items-center gap-1">
                         <Button
                             variant="ghost"
                             size="icon-sm"
                             className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
-                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                            disabled={currentPage === 1}
+                            onClick={handlePreviousPage}
+                            disabled={viewingPage === 1}
                         >
                             <ChevronLeft className="w-4 h-4" />
                         </Button>
                         <div className="flex items-center gap-1.5 px-2">
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                            {Array.from({ length: loadedPagesCount }, (_, i) => i + 1).map((page) => (
                                 <button
                                     key={page}
-                                    onClick={() => setCurrentPage(page)}
+                                    onClick={() => setViewingPage(page)}
                                     className={`w-7 h-7 rounded-md text-[10px] font-bold transition-all border ${
-                                        currentPage === page
+                                        viewingPage === page
                                             ? 'border-forest/20 text-forest/40'
                                             : 'border-transparent text-forest/40 hover:bg-sage/5'
                                     }`}
@@ -238,13 +275,16 @@ export function ApiKeyTable({ initialKeys }: ApiKeyTableProps) {
                                     {page}
                                 </button>
                             ))}
+                            {isFetchingNextPage && (
+                                <Loader2 className="w-4 h-4 animate-spin text-forest/40" />
+                            )}
                         </div>
                         <Button
                             variant="ghost"
                             size="icon-sm"
                             className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
-                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                            disabled={currentPage === totalPages}
+                            onClick={handleNextPage}
+                            disabled={!hasNextPage && viewingPage >= loadedPagesCount}
                         >
                             <ChevronRight className="w-4 h-4" />
                         </Button>
