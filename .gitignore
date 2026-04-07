@@ -43,3 +43,6 @@ next-env.d.ts
 # logs
 build.log
 server.log
+
+# agents
+SECUREON_DESIGN_SYSTEM.md

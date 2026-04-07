@@ -4,7 +4,7 @@ import { ShieldCheck, ChevronRight } from 'lucide-react';
 
 export function HeroSection() {
   return (
-    <section className="py-16 lg:py-32 px-4 sm:px-6 text-center max-w-5xl mx-auto space-y-8 sm:space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+    <section className="py-16 lg:py-26 px-4 sm:px-6 text-center max-w-5xl mx-auto space-y-8 sm:space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-1000">
       <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-sage/20 border border-sage/30 text-forest text-[10px] sm:text-sm font-bold tracking-wide">
         <ShieldCheck className="w-3 h-3 sm:w-4 sm:h-4 text-olive" />
         ENTERPRISE-GRADE SECURITY FOR TEAMS

@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { ClickSpark } from "@/components/ui/click-spark";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,6 +29,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-background text-foreground">
         <Providers>
           {children}
+          <ClickSpark />
           <Toaster position="top-center" richColors />
         </Providers>
       </body>
