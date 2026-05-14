@@ -72,15 +72,15 @@ export function HeroSection() {
             className="object-contain scale-[0.8]"
             sizes="100vw"
           />
-          <div className="absolute -bottom-5 right-0 bg-stat-bg text-white rounded-2xl p-4 shadow-xl">
-            <div className="flex gap-6">
+          <div className="absolute bottom-0 left-0 right-0 bg-stat-bg text-white rounded-t-2xl p-4 shadow-xl">
+            <div className="flex gap-6 justify-center">
               <div>
                 <p className="text-xl font-heading font-bold">500+</p>
-                <p className="text-[10px] text-white/70">Teams</p>
+                <p className="text-xs text-white/70">Teams</p>
               </div>
               <div>
                 <p className="text-xl font-heading font-bold">10K+</p>
-                <p className="text-[10px] text-white/70">Keys</p>
+                <p className="text-xs text-white/70">Keys</p>
               </div>
             </div>
           </div>
