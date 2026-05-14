@@ -38,7 +38,7 @@ export function HeroSection() {
           <div className="relative hidden lg:block">
             <div className="relative w-full aspect-square rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
               <Image
-                src="/hero-keys-1.png"
+                src="/hero-keys-2.png"
                 alt="3D rendered security keys"
                 fill
                 className="object-contain scale-[0.82]"
@@ -66,7 +66,7 @@ export function HeroSection() {
       <div className="lg:hidden mx-auto max-w-[1160px] px-4 sm:px-8 pb-4">
         <div className="relative w-full aspect-[5/4] rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
           <Image
-            src="/hero-keys-1.png"
+            src="/hero-keys-2.png"
             alt="3D rendered security keys"
             fill
             className="object-contain scale-[0.8]"

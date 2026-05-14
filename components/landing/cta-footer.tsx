@@ -15,7 +15,7 @@ export function CTASection() {
             </span>
             ?
           </h2>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-lg mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-lg mx-auto font-medium">
             Stop sharing API keys over Slack and email. Get your team on a
             secure, encrypted vault today.
           </p>

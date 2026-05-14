@@ -41,8 +41,8 @@ export function HowItWorks() {
               .
             </h2>
           </div>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed self-end max-w-md">
-            From team creation to secure key access — KeyBase makes it simple
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed self-end max-w-md font-medium">
+            From team creation to secure key access, KeyBase makes it simple
             to manage your team&apos;s API credentials.
           </p>
         </div>
