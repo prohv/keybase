@@ -56,7 +56,6 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
     const [deleteCandidate, setDeleteCandidate] = useState<{ id: number; name: string } | null>(null);
     const [copied, setCopied] = useState(false);
     const [viewingPage, setViewingPage] = useState(1);
-    const [visiblePagesCount, setVisiblePagesCount] = useState(1);
 
     const {
         data,
@@ -84,11 +83,9 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
     async function handleNextPage() {
         if (viewingPage < loadedPagesCount) {
-            setVisiblePagesCount(prev => Math.max(prev, viewingPage + 1));
             setViewingPage(prev => prev + 1);
-        } else if (viewingPage < totalPages && hasNextPage && !isFetchingNextPage) {
-            await fetchNextPage();
-            setVisiblePagesCount(prev => Math.max(prev, viewingPage + 1));
+        } else if (viewingPage < totalPages && hasNextPage) {
+            fetchNextPage();
             setViewingPage(prev => prev + 1);
         }
     }
@@ -177,7 +174,13 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {currentPageKeys.length === 0 ? (
+                    {currentPageKeys.length === 0 && isFetchingNextPage ? (
+                        <TableRow>
+                            <TableCell colSpan={4} className="h-40 text-center">
+                                <Loader2 className="w-5 h-5 animate-spin text-forest/40 mx-auto" />
+                            </TableCell>
+                        </TableRow>
+                    ) : currentPageKeys.length === 0 ? (
                         <TableRow>
                             <TableCell colSpan={4} className="h-40 text-center text-muted-foreground font-medium italic">
                                 The vault is currently empty.
@@ -273,49 +276,29 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
             {/* Pagination Controls */}
             {totalPages > 0 && (
-                <div className="flex items-center justify-between px-6 py-4 border-t border-border-light bg-forest/[0.01]">
-                    <div className="text-xs font-medium text-forest/30 uppercase tracking-wider">
+                <div className="flex items-center justify-center gap-4 px-6 py-4 border-t border-border-light bg-forest/[0.01]">
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-forest/40 hover:text-forest/60 hover:bg-bg-muted disabled:opacity-10 transition-colors"
+                        onClick={handlePreviousPage}
+                        disabled={viewingPage === 1}
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <div className="text-xs font-medium text-forest/40 uppercase tracking-wider tabular-nums min-w-[6rem] text-center">
                         Page {viewingPage} of {totalPages}
                     </div>
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            className="text-forest/30 hover:text-forest/60 hover:bg-bg-muted disabled:opacity-10 transition-colors"
-                            onClick={handlePreviousPage}
-                            disabled={viewingPage === 1}
-                        >
-                            <ChevronLeft className="w-4 h-4" />
-                        </Button>
-                        <div className="flex items-center gap-1.5 px-2">
-                            {Array.from({ length: visiblePagesCount }, (_, i) => i + 1).map((page) => (
-                                <button
-                                    key={page}
-                                    onClick={() => setViewingPage(page)}
-                                    className={`w-7 h-7 rounded-md text-xs font-medium transition-all border ${
-                                        viewingPage === page
-                                            ? 'border-border-light text-forest/40'
-                                            : 'border-transparent text-forest/40 hover:bg-bg-muted'
-                                    }`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-                            {isFetchingNextPage && (
-                                <Loader2 className="w-4 h-4 animate-spin text-forest/40" />
-                            )}
-                        </div>
-                        <Button
-                            variant="ghost"
-                            size="icon-sm"
-                            className="text-forest/30 hover:text-forest/60 hover:bg-bg-muted disabled:opacity-10 transition-colors"
-                            onClick={handleNextPage}
-                            onMouseEnter={handleMouseEnterNext}
-                            disabled={viewingPage >= totalPages}
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </Button>
-                    </div>
+                    <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="text-forest/40 hover:text-forest/60 hover:bg-bg-muted disabled:opacity-10 transition-colors"
+                        onClick={handleNextPage}
+                        onMouseEnter={handleMouseEnterNext}
+                        disabled={viewingPage >= totalPages}
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </Button>
                 </div>
             )}
             </CardContent>
