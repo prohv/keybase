@@ -14,7 +14,7 @@ export function Header() {
           <Link href="/auth/login" className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-green-dark transition-colors">
             Sign In
           </Link>
-          <Button asChild className="bg-green-dark hover:bg-green-dark/90 text-white px-5 py-2 font-medium text-xs sm:text-sm rounded-full shadow-sm shadow-forest/10 h-9">
+          <Button asChild className="hidden sm:inline-flex bg-green-dark hover:bg-green-dark/90 text-white px-5 py-2 font-medium text-xs sm:text-sm rounded-full shadow-sm shadow-forest/10 h-9">
             <Link href="/auth/register">Get Started</Link>
           </Button>
         </nav>
