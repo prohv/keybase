@@ -23,7 +23,9 @@ export default function LoginPage() {
       <Card2 className="w-full max-w-md bg-white border-border-light shadow-sm rounded-2xl">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-2">
-            <Image src="/keybase-logo.svg" alt="KeyBase" width={40} height={40} className="w-10 h-10" />
+            <Link href="/">
+              <Image src="/keybase-logo.svg" alt="KeyBase" width={40} height={40} className="w-10 h-10" />
+            </Link>
           </div>
           <CardTitle className="text-3xl font-heading font-bold tracking-tight text-forest">Welcome Back</CardTitle>
           <CardDescription className="text-muted-foreground font-medium">

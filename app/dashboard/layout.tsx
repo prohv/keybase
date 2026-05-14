@@ -50,7 +50,7 @@ export default async function DashboardLayout({
             <div className="flex min-h-screen bg-white w-full">
                 <Sidebar className="border-r border-border-light w-60">
                     <SidebarHeader className="p-4 border-b border-border-light h-16 flex items-center">
-                        <Link href="/dashboard" className="flex items-center gap-2 group">
+                        <Link href="/" className="flex items-center gap-2 group">
                             <Image src="/keybase-logo.svg" alt="KeyBase" width={36} height={36} className="w-9 h-9" />
                             <span className="font-heading font-bold text-xl text-forest tracking-tight">KeyBase</span>
                         </Link>
