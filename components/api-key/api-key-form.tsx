@@ -29,15 +29,15 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
     }
 
     return (
-        <Card2 className="border-forest/10 shadow-sm glass-card">
+        <Card2 className="bg-white border-border-light shadow-sm rounded-2xl">
             <CardHeader>
-                <CardTitle className="text-xl font-bold text-forest">Add Security Key</CardTitle>
-                <CardDescription>Encrypt and store a new API key in this vault.</CardDescription>
+                <CardTitle className="text-xl font-heading font-bold text-forest">Add Security Key</CardTitle>
+                <CardDescription className="font-medium">Encrypt and store a new API key in this vault.</CardDescription>
             </CardHeader>
             <CardContent>
                 <form id="api-key-form" action={handleSubmit} className="space-y-5">
                     <div className="space-y-2">
-                        <Label htmlFor="name" className="text-forest font-semibold">Key Identifier</Label>
+                        <Label htmlFor="name" className="font-heading font-semibold text-xs tracking-wide uppercase text-forest">Key Identifier</Label>
                         <div className="relative group/input">
                             <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
                                 {provider ? (
@@ -67,12 +67,12 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                                 placeholder="e.g. OpenAI Production"
                                 required
                                 disabled={createMutation.isPending}
-                                className="bg-background/50 border-forest/10 focus:ring-sage pl-10"
+                                className="bg-white border-border-light focus:border-green-dark focus:ring-green-dark/20 rounded-lg pl-10"
                             />
                         </div>
                     </div>
                     <div className="space-y-2">
-                        <Label htmlFor="key" className="text-forest font-semibold">API Token</Label>
+                        <Label htmlFor="key" className="font-heading font-semibold text-xs tracking-wide uppercase text-forest">API Token</Label>
                         <Input
                             id="key"
                             name="key"
@@ -80,12 +80,12 @@ export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
                             placeholder="sk-..."
                             required
                             disabled={createMutation.isPending}
-                            className="bg-background/50 border-forest/10 focus:ring-sage"
+                                className="bg-white border-border-light focus:border-green-dark focus:ring-green-dark/20 rounded-lg"
                         />
                     </div>
                     <Button
                         type="submit"
-                        className="w-full bg-sage hover:bg-olive text-forest font-bold transition-all shadow-md"
+                        className="w-full bg-green-dark hover:bg-green-dark/90 text-white font-heading font-semibold text-sm rounded-full"
                         disabled={createMutation.isPending}
                     >
                         {createMutation.isPending ? (
