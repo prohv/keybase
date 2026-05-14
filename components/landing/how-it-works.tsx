@@ -60,9 +60,7 @@ export function HowItWorks() {
                     {step.label}
                   </span>
                 </div>
-                <span className="text-green-mid text-lg transition-transform duration-300 group-open:rotate-180">
-                  ↘
-                </span>
+                <ChevronDown className="w-4 h-4 text-green-mid transition-transform duration-300 group-open:rotate-180" />
               </summary>
               <div className="px-5 pb-5 pl-16">
                 <p className="text-sm text-muted-foreground leading-relaxed">
