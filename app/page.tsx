@@ -18,7 +18,7 @@ export default function Home() {
         <CTASection />
       </main>
 
-      <footer className="py-10 px-6 border-t border-border-light text-center">
+      <footer className="py-6 px-6 border-t border-border-light text-center">
         <p className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} KeyBase Security. Built for high-performance teams.
         </p>
