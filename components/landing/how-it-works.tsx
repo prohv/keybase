@@ -1,3 +1,5 @@
+import { ChevronDown } from "lucide-react";
+
 const steps = [
   {
     label: "Create a Team",
