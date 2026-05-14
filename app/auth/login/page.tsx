@@ -19,52 +19,50 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[url('/bg-pattern.svg')] bg-cover">
-      <div className="fixed inset-0 bg-cream/80 -z-10" />
-
-      <Card2 className="w-full max-w-md glass-card border-forest/10">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-white">
+      <Card2 className="w-full max-w-md bg-white border-border-light shadow-sm rounded-2xl">
         <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <Image src="/keybase-logo.svg" alt="KeyBase" width={64} height={64} className="w-16 h-16" />
+          <div className="flex justify-center mb-2">
+            <Image src="/keybase-logo.svg" alt="KeyBase" width={40} height={40} className="w-10 h-10" />
           </div>
-          <CardTitle className="text-3xl font-bold tracking-tight text-forest">Welcome Back</CardTitle>
-          <CardDescription className="text-muted-foreground text-lg">
+          <CardTitle className="text-3xl font-heading font-bold tracking-tight text-forest">Welcome Back</CardTitle>
+          <CardDescription className="text-muted-foreground font-medium">
             Enter your credentials to access your vault
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form action={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-forest font-semibold">Email Account</Label>
+              <Label htmlFor="email" className="font-heading font-semibold text-xs tracking-wide uppercase text-forest">Email Account</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 placeholder="name@example.com"
                 required
-                className="bg-background/50 border-forest/10 focus:border-sage focus:ring-sage"
+                className="bg-white border-border-light focus:border-green-dark focus:ring-green-dark/20 rounded-lg"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-forest font-semibold">Security Password</Label>
+                <Label htmlFor="password" className="font-heading font-semibold text-xs tracking-wide uppercase text-forest">Security Password</Label>
               </div>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                className="bg-background/50 border-forest/10 focus:border-sage focus:ring-sage"
+                className="bg-white border-border-light focus:border-green-dark focus:ring-green-dark/20 rounded-lg"
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-sage hover:bg-olive text-forest font-bold py-6 text-lg transition-all active:scale-[0.98]"
+              className="w-full bg-green-dark hover:bg-green-dark/90 text-white font-heading font-semibold text-sm rounded-full py-2.5 transition-all active:scale-[0.98]"
               disabled={loginMutation.isPending}
             >
               {loginMutation.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Authenticating...
                 </>
               ) : (
@@ -77,7 +75,7 @@ export default function LoginPage() {
           <p className="text-sm text-muted-foreground">Dont have an account?</p>
           <Link
             href="/auth/register"
-            className="text-sm font-bold text-olive hover:text-forest transition-colors underline underline-offset-4"
+            className="text-sm font-medium text-green-mid hover:text-green-dark transition-colors"
           >
             Create your vault
           </Link>
