@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ChevronRight } from 'lucide-react';
 
@@ -17,8 +18,8 @@ export function HeroSection() {
             </h1>
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed font-medium">
-              Stop pasting sensitive tokens in Slack or .env files. Encrypted,
-              audited, and collaborative vault for your team&apos;s project keys.
+              Stop pasting sensitive tokens in Slack or sharing .env files. Use Keybase, encrypted
+              & collaborative vault for your team.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-3 pt-2">
@@ -35,10 +36,15 @@ export function HeroSection() {
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="relative w-full aspect-[4/5] rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
-              <div className="absolute top-8 left-8 w-40 h-40 rounded-full bg-gradient-to-br from-white/30 to-transparent blur-sm" />
-              <div className="absolute bottom-16 right-8 w-56 h-56 rounded-full bg-gradient-to-tl from-green-dark/10 to-transparent blur-sm" />
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-gradient-to-tr from-green-soft/20 to-transparent blur-md" />
+            <div className="relative w-full aspect-square rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
+              <Image
+                src="/hero-keys-1.png"
+                alt="3D rendered security keys"
+                fill
+                className="object-contain scale-[0.82]"
+                sizes="50vw"
+                priority
+              />
             </div>
 
             <div className="absolute -bottom-5 right-0 lg:-left-6 lg:right-auto bg-stat-bg text-white rounded-2xl p-5 shadow-xl min-w-[180px]">
@@ -58,9 +64,14 @@ export function HeroSection() {
       </div>
 
       <div className="lg:hidden mx-auto max-w-[1160px] px-4 sm:px-8 pb-4">
-        <div className="relative w-full aspect-[16/9] rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
-          <div className="absolute top-6 left-6 w-32 h-32 rounded-full bg-gradient-to-br from-white/30 to-transparent blur-sm" />
-          <div className="absolute bottom-8 right-6 w-44 h-44 rounded-full bg-gradient-to-tl from-green-dark/10 to-transparent blur-sm" />
+        <div className="relative w-full aspect-[5/4] rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
+          <Image
+            src="/hero-keys-1.png"
+            alt="3D rendered security keys"
+            fill
+            className="object-contain scale-[0.8]"
+            sizes="100vw"
+          />
           <div className="absolute -bottom-5 right-0 bg-stat-bg text-white rounded-2xl p-4 shadow-xl">
             <div className="flex gap-6">
               <div>
