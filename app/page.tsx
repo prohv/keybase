@@ -7,7 +7,7 @@ import { CTASection } from '@/components/landing/cta-footer';
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-cream selection:bg-green-pale selection:text-green-dark">
+    <div className="flex flex-col min-h-screen bg-white/90 selection:bg-green-pale selection:text-green-dark">
       <Header />
 
       <main className="flex-1">
