@@ -19,8 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import { KeyRound, Users, LogOut, LayoutDashboard, PlusCircle, UserPlus, House } from 'lucide-react';
 import Image from 'next/image';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { UserAvatar } from '@/components/ui/user-avatar';
 import { logoutAction } from '@/app/auth/logout/action';
 import Link from 'next/link';
 
@@ -128,22 +127,15 @@ export default async function DashboardLayout({
                         <div className="flex items-center gap-4">
                             <SidebarTrigger className="text-forest" />
                             <div className="h-6 w-px bg-forest/10 hidden md:block" />
-                            <h1 className="text-lg font-heading font-medium text-forest hidden md:block">Security Vault</h1>
+                            <h1 className="text-lg font-heading font-semibold text-forest hidden md:block">Security Vault</h1>
                         </div>
 
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-3 pr-4 border-r border-border-light">
                                 <div className="text-right hidden sm:block">
-                                    <div className="text-sm font-heading font-medium text-forest leading-none">{user.email.split('@')[0]}</div>
-                                    <Badge variant="outline" className="mt-1 bg-sage/10 text-forest border-border-light text-[10px] h-4 font-medium">
-                                        {user.role}
-                                    </Badge>
+                                    <div className="text-base font-heading font-medium text-forest leading-none">{user.email.split('@')[0]}</div>
                                 </div>
-                                <Avatar className="h-9 w-9 border-2 border-sage shadow-sm">
-                                    <AvatarFallback className="bg-sage text-forest font-bold">
-                                        {user.email.substring(0, 2).toUpperCase()}
-                                    </AvatarFallback>
-                                </Avatar>
+                                <UserAvatar email={user.email} initials={user.email.substring(0, 2).toUpperCase()} />
                             </div>
 
                             <form action={logoutAction}>
