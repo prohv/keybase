@@ -8,14 +8,12 @@ Built as a full-stack technical assignment focusing on security-first architectu
 
 ## Features
 
-* **Advanced Security**: API keys are encrypted using AES-256-CBC before database entry. Keys are never stored or logged in plain text.
-* **Team-Based Access Control**: Admins manage team creation and generate unique 8-character hex join codes. Users gain access to shared vaults only after joining a team via valid code.
-* **Full CRUD Lifecycle**: Secure management for API keys including creation, listing, secure reveal, and deletion.
-* **Robust Authentication**: Secure user registration and login powered by JWT (7-day expiry) and bcrypt password hashing (12 salt rounds).
-* **Type-Safe Validation**: End-to-end schema validation using Zod for API requests, server actions, and database operations.
+* **AES-256 Encryption**: Each key is encrypted with a unique Initialization Vector before hitting our database. Keys are never stored or logged in plain text.
+* **Team Access Control**: Admins manage team creation and generate unique 8-character hex join codes. Users access shared vaults only after joining a valid team.
 * **Provider Detection**: Automatic detection of API providers (OpenAI, Anthropic, Google Cloud, AWS, Azure, etc.) from key names.
-* **Modern Performance**: Built with Bun for rapid installation, execution, and optimized development workflow.
-* **API Documentation**: Full Swagger/OpenAPI documentation available at `/api/docs`.
+* **Audit Logging**: Keep track of who created, revealed, and deleted keys. Complete visibility into your team's security posture.
+* **Full CRUD Lifecycle**: Secure management for API keys including creation, listing, secure reveal, and permanent deletion.
+* **API Documentation**: Full Swagger/OpenAPI documentation available at `/api/docs`. Type-safe validation with Zod end-to-end.
 
 ---
 
@@ -25,7 +23,9 @@ Built as a full-stack technical assignment focusing on security-first architectu
 * **Runtime & Package Manager**: Bun
 * **Database & ORM**: PostgreSQL + Drizzle ORM
 * **UI & Styling**: Tailwind CSS v4 + shadcn/ui (new-york theme)
-* **State Management**: @tanstack/react-query (60s stale time, infinite queries for pagination)
+* **Fonts**: Cabinet Grotesk (headings) + General Sans (body) — local variable fonts
+* **Design System**: Custom green-toned design system with CSS custom properties, organic minimalism with editorial structure
+* **State Management**: @tanstack/react-query (30s stale time, infinite queries for pagination)
 * **Security**: Node.js Crypto (AES-256-CBC), JWT (jsonwebtoken), bcryptjs
 * **Validation**: Zod, React Hook Form
 * **Documentation**: Swagger UI / OpenAPI 3.0
@@ -154,15 +154,16 @@ keybase/
 │   ├── page.tsx              # Landing page
 │   └── providers.tsx         # React Query provider
 ├── components/
-│   ├── ui/                   # shadcn/ui components (18 total)
+│   ├── ui/                   # shadcn/ui + TeamCodeDisplay, UserAvatar
 │   ├── api-key/              # ApiKeyForm, ApiKeyTable
-│   └── landing/              # Header, HeroSection, FeatureGrid
+│   └── landing/              # Header, HeroSection, Ticker, FeatureGrid, HowItWorks, CTASection
 ├── hooks/                    # React Query hooks
 │   ├── use-api-keys.ts       # Infinite query for paginated keys
 │   ├── use-auth.ts           # Login/register mutations
 │   ├── use-team.ts           # Join team mutation
 │   └── use-mobile.ts         # Mobile detection
 ├── lib/
+│   ├── fonts.ts              # Cabinet Grotesk + General Sans local font config
 │   ├── api/
 │   │   └── fetch.ts          # Server-side fetch helpers
 │   ├── encryption.ts         # AES-256-CBC encrypt/decrypt
@@ -174,6 +175,13 @@ keybase/
 │   └── index.ts              # Database connection
 ├── drizzle/
 │   └── migrations/           # SQL migrations
+├── public/
+│   ├── fonts/
+│   │   ├── CabinetGrotesk-Variable.woff2
+│   │   └── GeneralSans-Variable.woff2
+│   ├── hero-keys-1.png       # 3D rendered keys for hero section
+│   ├── hero-keys-2.png
+│   └── keybase-logo.svg
 ├── proxy.ts                  # Middleware (auth check - currently disabled)
 ├── drizzle.config.ts         # Drizzle ORM configuration
 ├── components.json           # shadcn/ui configuration
@@ -281,7 +289,7 @@ API documentation available at http://localhost:3000/api/docs.
 
 ### React Query Configuration
 
-* **Stale Time**: 60 seconds
+* **Stale Time**: 30 seconds
 * **Retry**: 1 attempt
 * **Refetch on Window Focus**: Disabled
 * **Infinite Queries**: Used for paginated API key lists (4 keys per page)
