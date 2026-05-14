@@ -41,9 +41,9 @@ const features = [
 
 export function FeatureGrid() {
   return (
-    <section className="bg-bg-section py-[var(--section-py)]">
+    <section className="bg-bg-section py-16 lg:py-20">
       <div className="max-w-[1160px] mx-auto px-4 sm:px-8">
-        <div className="mb-12">
+        <div className="mb-14">
           <div className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-xs font-medium text-muted-foreground tracking-wide">
             OUR FEATURES
           </div>
@@ -57,26 +57,33 @@ export function FeatureGrid() {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((feature) => (
-            <div
-              key={feature.title}
-              className="group bg-white rounded-3xl p-6 border border-border-light shadow-sm hover:shadow-xl transition-shadow duration-300 flex flex-col"
-            >
-              <div className="w-10 h-10 bg-accent-tag rounded-xl flex items-center justify-center mb-5">
-                <feature.icon className="w-5 h-5 text-green-mid" />
-              </div>
-              <h3 className="font-heading font-semibold text-lg text-forest mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed flex-1">
-                {feature.description}
-              </p>
-              <span className="inline-flex items-center gap-1 text-sm font-medium text-green-mid mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                Learn more &rarr;
-              </span>
-            </div>
-          ))}
+        <div className="relative max-w-3xl">
+          <div className="absolute left-[19px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-green-pale to-green-dark rounded-full" />
+
+          <div className="space-y-0">
+            {features.map((feature, i) => {
+              const Icon = feature.icon;
+              return (
+                <div key={feature.title} className="relative pl-14 pb-8 last:pb-0 group">
+                  <div className="absolute left-[14px] top-1 w-[12px] h-[12px] rounded-full bg-green-dark ring-4 ring-bg-section transition-transform duration-300 group-hover:scale-125" />
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-accent-tag rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                      <Icon className="w-4 h-4 text-green-mid" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-heading font-semibold text-base text-forest mb-1">
+                        {feature.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed font-medium max-w-xl">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
