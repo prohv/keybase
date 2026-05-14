@@ -65,7 +65,7 @@ export function FeatureGrid() {
               const Icon = feature.icon;
               return (
                 <div key={feature.title} className="relative pl-14 pb-8 last:pb-0 group">
-                  <div className="absolute left-[14px] top-1 w-[12px] h-[12px] rounded-full bg-green-dark ring-4 ring-bg-section transition-transform duration-300 group-hover:scale-125" />
+                  <div className="absolute left-[14px] top-[0.625rem] w-[12px] h-[12px] rounded-full bg-green-dark ring-4 ring-bg-section transition-transform duration-300 group-hover:scale-125" />
 
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 bg-accent-tag rounded-lg flex items-center justify-center shrink-0 mt-0.5">
