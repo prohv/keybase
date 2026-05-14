@@ -20,9 +20,7 @@ export function useLoginMutation() {
     onSuccess: (data) => {
       toast.success('Successfully logged in!');
       if (data?.redirectTo) {
-        setTimeout(() => {
-          router.push(data.redirectTo);
-        }, 500);
+        router.push(data.redirectTo);
       }
     },
     onError: (error: Error) => {
@@ -45,9 +43,7 @@ export function useRegisterMutation() {
     onSuccess: (data) => {
       toast.success('Account created successfully!');
       if (data?.redirectTo) {
-        setTimeout(() => {
-          router.push(data.redirectTo);
-        }, 500);
+        router.push(data.redirectTo);
       }
     },
     onError: (error: Error) => {
