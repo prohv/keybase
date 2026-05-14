@@ -54,28 +54,51 @@
   --color-olive: #4F6F52;
   --color-slate: #64748B;
   --color-muted-text: #94A3B8;
+
+  --color-bg-section: #F5F7F2;
+  --color-bg-muted: #EEF2E8;
+  --color-bg-green-light: #D6E8C8;
+  --color-bg-green-medium: #B5CF9E;
+  --color-green-dark: #3B5E35;
+  --color-green-mid: #5A7A4E;
+  --color-green-soft: #8CAF7A;
+  --color-green-pale: #C8DFBA;
+  --color-accent-tag: #E8F5DE;
+  --color-border-light: #DDE8D4;
+  --color-stat-bg: #4A6340;
+
+  --radius-card: 16px;
+  --radius-image: 24px;
+  --radius-hero: 40px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  --container-max: 1160px;
+  --section-py: clamp(48px, 8vw, 96px);
 }
 
 :root {
   --radius: 0.75rem;
-  --background: #FAFAFA; /* Off-white */
-  --foreground: #2D3E31; /* Forest */
-  --card: #FAF1E6; /* Beige */
+  --background: #FAFAFA;
+  --foreground: #2D3E31;
+  --card: #FAF1E6;
   --card-foreground: #2D3E31;
   --popover: #FAF1E6;
   --popover-foreground: #2D3E31;
-  --primary: #99BC85; /* Sage */
+  --primary: #99BC85;
   --primary-foreground: #FDFAF6;
-  --secondary: #E4EFE7; /* Pale Sage */
+  --secondary: #E4EFE7;
   --secondary-foreground: #2D3E31;
   --muted: #E4EFE7;
-  --muted-foreground: #4F6F52; /* Olive */
+  --muted-foreground: #4F6F52;
   --accent: #99BC85;
   --accent-foreground: #2D3E31;
   --destructive: #EF4444;
   --border: #2D3E31 / 0.1;
   --input: #2D3E31 / 0.1;
   --ring: #99BC85;
+
+  --color-shadow: rgba(60, 90, 50, 0.08);
 }
 
 .dark {
