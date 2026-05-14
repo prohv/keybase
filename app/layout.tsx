@@ -1,13 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "./providers";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+import { cabinet, generalSans } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   title: "KeyBase | Secure Team API Key Vault",
@@ -25,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable}`}>
+    <html lang="en" className={`${cabinet.variable} ${generalSans.variable}`}>
       <body className="antialiased min-h-screen bg-background text-foreground">
         <Providers>
           {children}
