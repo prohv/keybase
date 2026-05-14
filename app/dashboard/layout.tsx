@@ -100,6 +100,16 @@ export default async function DashboardLayout({
                                             </SidebarMenuItem>
                                         ))
                                     )}
+                                </SidebarMenu>
+                            </SidebarGroupContent>
+                        </SidebarGroup>
+
+                        <SidebarGroup className="mt-4">
+                            <SidebarGroupLabel className="text-forest/60 font-medium px-4">
+                                Actions
+                            </SidebarGroupLabel>
+                            <SidebarGroupContent className="p-2">
+                                <SidebarMenu>
                                     <SidebarMenuItem>
                                         <SidebarMenuButton asChild>
                                             <Link href="/team/create" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-bg-muted rounded-lg">
