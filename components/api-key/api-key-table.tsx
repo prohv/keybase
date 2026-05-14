@@ -149,15 +149,15 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
     return (
         <>
-            <Card className="border-forest/10 shadow-sm min-h-[200px] overflow-hidden">
-            <CardHeader className="flex flex-row items-end justify-between space-y-0 pb-3 border-b border-forest/10">
+            <Card className="border-border-light shadow-sm min-h-[200px] overflow-hidden">
+            <CardHeader className="flex flex-row items-end justify-between space-y-0 pb-3 border-b border-border-light">
                 <div className="flex-1">
-                    <CardTitle className="text-2xl font-bold text-forest">Vault Secrets</CardTitle>
-                    <CardDescription>Decrypted keys are never persisted in cleartext.</CardDescription>
+                    <CardTitle className="text-2xl font-heading font-bold text-forest">Vault Secrets</CardTitle>
+                    <CardDescription className="font-medium">Decrypted keys are never persisted in cleartext.</CardDescription>
                 </div>
                 {totalKeys > 0 && (
-                    <div className="flex items-center bg-background/50 border border-forest/10 rounded-full px-3 py-1">
-                        <span className="text-[10px] font-black text-forest/40 uppercase tracking-widest leading-none">
+                    <div className="flex items-center bg-white border border-border-light rounded-full px-3 py-1">
+                        <span className="text-xs font-medium text-forest/40 uppercase tracking-wider leading-none">
                             Total Keys : <span className="text-forest ml-1">{totalKeys}</span>
                         </span>
                     </div>
@@ -166,17 +166,17 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
             <CardContent className="p-0">
                 <Table>
                 <TableHeader className="bg-forest/[0.02]">
-                    <TableRow className="hover:bg-transparent border-forest/10">
-                        <TableHead className="w-full sm:w-[300px] text-forest font-bold px-4 sm:px-6">Identity</TableHead>
-                        <TableHead className="hidden sm:table-cell text-forest font-bold">Ownership</TableHead>
-                        <TableHead className="hidden sm:table-cell text-forest font-bold">Created</TableHead>
-                        <TableHead className="text-right px-4 sm:px-6 text-forest font-bold">Safety</TableHead>
+                    <TableRow className="hover:bg-transparent border-border-light">
+                        <TableHead className="w-full sm:w-[300px] font-heading font-semibold text-xs tracking-wide uppercase text-forest px-4 sm:px-6">Identity</TableHead>
+                        <TableHead className="hidden sm:table-cell font-heading font-semibold text-xs tracking-wide uppercase text-forest">Ownership</TableHead>
+                        <TableHead className="hidden sm:table-cell font-heading font-semibold text-xs tracking-wide uppercase text-forest">Created</TableHead>
+                        <TableHead className="text-right px-4 sm:px-6 font-heading font-semibold text-xs tracking-wide uppercase text-forest">Safety</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {currentPageKeys.length === 0 ? (
                         <TableRow>
-                            <TableCell colSpan={4} className="h-40 text-center text-muted-foreground italic">
+                            <TableCell colSpan={4} className="h-40 text-center text-muted-foreground font-medium italic">
                                 The vault is currently empty.
                             </TableCell>
                         </TableRow>
@@ -184,15 +184,15 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                         currentPageKeys.map((key) => {
                             if (!key) return null;
                             return (
-                                <TableRow key={key.id} className="border-forest/5 hover:bg-sage/5 transition-colors">
-                                    <TableCell className="px-4 sm:px-6 py-4 font-bold text-forest flex items-center gap-3">
+                                <TableRow key={key.id} className="border-border-light hover:bg-bg-muted transition-colors">
+                                    <TableCell className="px-4 sm:px-6 py-4 font-semibold text-forest flex items-center gap-3">
                                         <div className="relative group/icon shrink-0">
                                             {(() => {
                                                 const provider = getProviderInfo(key.name);
                                                 if (provider) {
                                                     return (
                                                         <div
-                                                            className="p-1.5 sm:p-2 bg-white rounded-lg border border-forest/10 shadow-sm flex items-center justify-center overflow-hidden"
+                                                            className="p-1.5 sm:p-2 bg-white rounded-lg border border-border-light shadow-sm flex items-center justify-center overflow-hidden"
                                                             title={`${provider.slug.charAt(0).toUpperCase() + provider.slug.slice(1)} detected`}
                                                         >
                                                             <div
@@ -213,7 +213,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                                                     );
                                                 }
                                                 return (
-                                                    <div className="p-1.5 sm:p-2 bg-background rounded-lg border border-forest/10 shadow-sm group-hover/icon:bg-sage/10 transition-colors">
+                                                    <div className="p-1.5 sm:p-2 bg-white rounded-lg border border-border-light shadow-sm group-hover/icon:bg-sage/10 transition-colors">
                                                         <Key className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-forest/40" />
                                                     </div>
                                                 );
@@ -228,7 +228,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="hidden sm:table-cell">
-                                        <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+                                        <div className="flex items-center gap-1.5 text-muted-foreground text-xs font-medium">
                                             <Calendar className="w-3 h-3" />
                                             {key.createdAt ? new Date(key.createdAt).toLocaleDateString() : 'N/A'}
                                         </div>
@@ -237,7 +237,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                                         <Button
                                             size="icon"
                                             variant="outline"
-                                            className="h-8 w-8 sm:h-9 sm:w-9 border-forest/10 hover:border-sage hover:bg-sage/10 text-forest"
+                                            className="h-8 w-8 sm:h-9 sm:w-9 border-border-light hover:border-green-dark hover:bg-green-dark/10 text-forest"
                                             title="Reveal Secret"
                                             disabled={revealingId === key.id}
                                             onClick={() => handleReveal(key.id)}
@@ -270,15 +270,15 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
             {/* Pagination Controls */}
             {totalPages > 0 && (
-                <div className="flex items-center justify-between px-6 py-4 border-t border-forest/10 bg-forest/[0.01]">
-                    <div className="text-[10px] font-black font-bold text-forest/30 uppercase tracking-[0.2em]">
+                <div className="flex items-center justify-between px-6 py-4 border-t border-border-light bg-forest/[0.01]">
+                    <div className="text-xs font-medium text-forest/30 uppercase tracking-wider">
                         Page {viewingPage} of {totalPages}
                     </div>
                     <div className="flex items-center gap-1">
                         <Button
                             variant="ghost"
                             size="icon-sm"
-                            className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
+                            className="text-forest/30 hover:text-forest/60 hover:bg-bg-muted disabled:opacity-10 transition-colors"
                             onClick={handlePreviousPage}
                             disabled={viewingPage === 1}
                         >
@@ -289,10 +289,10 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                                 <button
                                     key={page}
                                     onClick={() => setViewingPage(page)}
-                                    className={`w-7 h-7 rounded-md text-[10px] font-bold transition-all border ${
+                                    className={`w-7 h-7 rounded-md text-xs font-medium transition-all border ${
                                         viewingPage === page
-                                            ? 'border-forest/20 text-forest/40'
-                                            : 'border-transparent text-forest/40 hover:bg-sage/5'
+                                            ? 'border-border-light text-forest/40'
+                                            : 'border-transparent text-forest/40 hover:bg-bg-muted'
                                     }`}
                                 >
                                     {page}
@@ -305,7 +305,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                         <Button
                             variant="ghost"
                             size="icon-sm"
-                            className="text-forest/30 hover:text-forest/60 hover:bg-sage/5 disabled:opacity-10 transition-colors"
+                            className="text-forest/30 hover:text-forest/60 hover:bg-bg-muted disabled:opacity-10 transition-colors"
                             onClick={handleNextPage}
                             onMouseEnter={handleMouseEnterNext}
                             disabled={viewingPage >= totalPages}
@@ -320,18 +320,18 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
             {/* Reveal Dialog */}
             <Dialog open={isRevealOpen} onOpenChange={setIsRevealOpen}>
-                <DialogContent className="max-w-md bg-cream border-forest/10">
+                <DialogContent className="max-w-md bg-white border-border-light">
                     <DialogHeader>
-                        <DialogTitle className="text-forest flex items-center gap-2">
+                        <DialogTitle className="font-heading font-bold text-forest flex items-center gap-2">
                             <Eye className="w-5 h-5" />
                             Revealed API Key
                         </DialogTitle>
-                        <DialogDescription>
+                        <DialogDescription className="font-medium">
                             This sensitive token is now decrypted. Handle with extreme caution.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="mt-4 p-4 bg-forest/5 rounded-lg border border-forest/10 relative group">
-                        <code className="text-sm font-mono break-all text-forest">
+                    <div className="mt-4 p-4 bg-bg-muted rounded-lg border border-border-light relative group">
+                        <code className="text-sm font-mono break-all text-forest font-medium">
                             {revealedValue}
                         </code>
                         <Button
@@ -353,19 +353,19 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-                <DialogContent className="max-w-md bg-cream border-forest/10">
+                <DialogContent className="max-w-md bg-white border-border-light">
                     <DialogHeader>
-                        <DialogTitle className="text-forest flex items-center gap-2">
+                        <DialogTitle className="font-heading font-bold text-forest flex items-center gap-2">
                             <AlertTriangle className="w-5 h-5 text-olive" />
                             Confirm Deletion
                         </DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete <span className="font-bold text-forest">"{deleteCandidate?.name}"</span>?
+                        <DialogDescription className="font-medium">
+                            Are you sure you want to delete <span className="font-semibold text-forest">"{deleteCandidate?.name}"</span>?
                             This action is <span className="text-destructive font-semibold">irreversible</span>.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="mt-6">
-                        <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={deleteMutation.isPending} className="border-forest/10 hover:bg-sage/10">
+                        <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={deleteMutation.isPending} className="border-border-light hover:bg-bg-muted">
                             Keep Key
                         </Button>
                         <Button
