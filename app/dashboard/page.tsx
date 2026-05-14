@@ -52,19 +52,19 @@ export default async function DashboardPage(props: DashboardPageProps) {
           <ShieldAlert className="w-12 h-12 text-forest" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-3xl font-bold text-forest tracking-tight">No Vaults Found</h2>
-          <p className="text-muted-foreground text-lg max-w-sm">
+          <h2 className="text-3xl font-heading font-bold text-forest tracking-tight">No Vaults Found</h2>
+          <p className="text-muted-foreground text-lg max-w-sm font-medium">
             Setup your first team vault to start securing your API keys.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-          <Button asChild className="flex-1 h-24 bg-sage hover:bg-olive text-forest font-bold flex flex-col gap-2">
+          <Button asChild className="flex-1 h-24 bg-green-dark hover:bg-green-dark/90 text-white font-bold flex flex-col gap-2">
             <Link href="/team/create">
               <Plus className="w-6 h-6" />
               <span>Create Team</span>
             </Link>
           </Button>
-          <Button asChild variant="outline" className="flex-1 h-24 border-forest/10 hover:border-sage text-forest font-bold flex flex-col gap-2">
+          <Button asChild variant="outline" className="flex-1 h-24 border-border-light hover:border-green-dark text-forest font-bold flex flex-col gap-2">
             <Link href="/team/join">
               <UserPlus className="w-6 h-6" />
               <span>Join Team</span>
@@ -84,12 +84,12 @@ export default async function DashboardPage(props: DashboardPageProps) {
   const keys = keysResult.success && keysResult.data ? keysResult.data : [];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Team Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-forest/10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border-light">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-forest tracking-tight">{activeTeam.name}</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-forest tracking-tight">{activeTeam.name}</h2>
             <Badge className="bg-sage text-forest font-bold px-3 text-xs">Vault</Badge>
           </div>
           <p className="text-muted-foreground flex items-center gap-2 font-medium text-xs sm:text-sm">
@@ -100,16 +100,16 @@ export default async function DashboardPage(props: DashboardPageProps) {
 
         {activeTeam.createdBy === user.userId && (
           <div className="flex flex-col items-start md:items-end gap-2">
-            <span className="text-[10px] font-bold text-olive uppercase tracking-widest mr-1">Invite Members</span>
-            <div className="flex items-center gap-1 p-1 bg-olive/5 border border-olive/20 rounded-lg w-full sm:w-auto">
-              <code className="text-lg md:text-xl font-black font-bold text-forest tracking-widest px-4 flex-1 text-center font-mono">{activeTeam.teamCode}</code>
+            <span className="text-xs font-semibold text-green-mid uppercase tracking-wider mr-1">Invite Members</span>
+            <div className="flex items-center gap-1 p-1 bg-bg-muted border border-border-light rounded-lg w-full sm:w-auto">
+              <code className="text-lg md:text-xl font-bold text-forest tracking-wider px-4 flex-1 text-center font-mono">{activeTeam.teamCode}</code>
               <CopyTeamCodeButton code={activeTeam.teamCode} />
             </div>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left: Key Creation Form */}
         <div className="lg:col-span-1">
           <ApiKeyForm teamId={activeTeam.id} />
