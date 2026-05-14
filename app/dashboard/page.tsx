@@ -116,7 +116,7 @@ export default async function DashboardPage(props: DashboardPageProps) {
 
         {/* Right: API Keys Table */}
         <div className="lg:col-span-2">
-          <ApiKeyTable teamId={activeTeam.id} />
+          <ApiKeyTable key={activeTeam.id} teamId={activeTeam.id} />
         </div>
       </div>
     </div>

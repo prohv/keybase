@@ -56,6 +56,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
     const [deleteCandidate, setDeleteCandidate] = useState<{ id: number; name: string } | null>(null);
     const [copied, setCopied] = useState(false);
     const [viewingPage, setViewingPage] = useState(1);
+    const [visiblePagesCount, setVisiblePagesCount] = useState(1);
 
     const {
         data,
@@ -83,9 +84,11 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
 
     async function handleNextPage() {
         if (viewingPage < loadedPagesCount) {
+            setVisiblePagesCount(prev => Math.max(prev, viewingPage + 1));
             setViewingPage(prev => prev + 1);
         } else if (viewingPage < totalPages && hasNextPage && !isFetchingNextPage) {
             await fetchNextPage();
+            setVisiblePagesCount(prev => Math.max(prev, viewingPage + 1));
             setViewingPage(prev => prev + 1);
         }
     }
@@ -285,7 +288,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                             <ChevronLeft className="w-4 h-4" />
                         </Button>
                         <div className="flex items-center gap-1.5 px-2">
-                            {Array.from({ length: loadedPagesCount }, (_, i) => i + 1).map((page) => (
+                            {Array.from({ length: visiblePagesCount }, (_, i) => i + 1).map((page) => (
                                 <button
                                     key={page}
                                     onClick={() => setViewingPage(page)}
