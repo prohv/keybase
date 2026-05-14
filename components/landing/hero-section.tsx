@@ -22,14 +22,14 @@ export function HeroSection() {
               & collaborative vault for your team.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-start gap-3 pt-2">
-              <Button asChild className="bg-green-dark hover:bg-green-dark/90 text-white px-8 py-6 font-heading font-semibold text-sm rounded-full shadow-lg shadow-green-dark/15 transition-all active:scale-[0.98]">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-start gap-3 pt-2">
+              <Button asChild className="w-full sm:w-auto bg-green-dark hover:bg-green-dark/90 text-white px-8 py-6 font-heading font-semibold text-sm rounded-full shadow-lg shadow-green-dark/15 transition-all active:scale-[0.98]">
                 <Link href="/auth/register" className="flex items-center gap-2">
                   Initialize Your Vault
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="px-8 py-6 font-heading font-semibold text-sm rounded-full border-border-light text-forest hover:bg-forest/5">
+              <Button asChild variant="outline" className="w-full sm:w-auto px-8 py-6 font-heading font-semibold text-sm rounded-full border-border-light text-forest hover:bg-forest/5">
                 <Link href="/auth/login">Access Existing Vault</Link>
               </Button>
             </div>
@@ -63,7 +63,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="lg:hidden mx-auto max-w-[1160px] px-4 sm:px-8 pb-4">
+      <div className="lg:hidden mx-auto max-w-[1160px] px-4 sm:px-8 pb-4 mt-6">
         <div className="relative w-full aspect-[5/4] rounded-[40px] bg-gradient-to-br from-green-pale via-bg-green-light to-green-soft shadow-xl overflow-hidden">
           <Image
             src="/hero-keys-2.png"
