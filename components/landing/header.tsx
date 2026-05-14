@@ -5,7 +5,7 @@ import Image from 'next/image';
 export function Header() {
   return (
     <header className="sticky top-4 z-50 mx-auto max-w-7xl px-4">
-      <div className="flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl px-5 py-3 gap-6 md:gap-12 shadow-sm border border-border-light">
+      <div className="flex items-center justify-between bg-white/90 backdrop-blur-md rounded-2xl px-5 py-3 gap-24 sm:gap-12 shadow-sm border border-border-light">
         <Link href="/" className="flex items-center gap-2 group">
           <Image src="/keybase-logo.svg" alt="KeyBase" width={28} height={28} className="w-7 h-7 sm:w-8 sm:h-8" />
           <span className="text-base sm:text-xl font-heading font-bold text-forest tracking-tight">KeyBase</span>
