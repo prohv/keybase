@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       where: eq(users.email, email),
     });
 
-    if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
+    if (!user || !user.passwordHash || !bcrypt.compareSync(password, user.passwordHash)) {
       return Response.json(
         { error: 'Invalid email or password' },
         { status: 401 }

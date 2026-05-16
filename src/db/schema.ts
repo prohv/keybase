@@ -3,7 +3,10 @@
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: text('email').notNull().unique(),
-  passwordHash: text('password_hash').notNull(),
+  passwordHash: text('password_hash'),
+  oauthId: text('oauth_id').unique(),
+  name: text('name'),
+  avatarUrl: text('avatar_url'),
   role: text('role').notNull().$type<'admin' | 'user'>().default('user'),
   createdAt: timestamp('created_at').defaultNow(),
 });

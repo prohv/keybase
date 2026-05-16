@@ -30,7 +30,7 @@ export async function loginAction(formData: FormData) {
     where: eq(users.email, email),
   });
 
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+  if (!user || !user.passwordHash || !(await bcrypt.compare(password, user.passwordHash))) {
     return { error: 'Invalid email or password' };
   }
 

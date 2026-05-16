@@ -15,6 +15,13 @@
       "when": 1770451517263,
       "tag": "0001_goofy_ulik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778954446924,
+      "tag": "0002_friendly_makkari",
+      "breakpoints": true
     }
   ]
 }
