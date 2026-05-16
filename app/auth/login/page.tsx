@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { AuthDivider } from '@/components/ui/auth-divider';
+import { OAuthButton } from '@/components/ui/oauth-button';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -72,6 +74,8 @@ export default function LoginPage() {
               )}
             </Button>
           </form>
+          <AuthDivider />
+          <OAuthButton label="Sign in with Google" />
         </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-center gap-2">
           <p className="text-sm text-muted-foreground">Dont have an account?</p>
