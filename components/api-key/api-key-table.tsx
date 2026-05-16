@@ -37,12 +37,13 @@ import {
     Loader2,
     AlertTriangle,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { revealApiKeyAction } from '@/app/api-key/reveal/action';
 import { getProviderInfo } from '@/lib/providers';
-import { useApiKeys, useDeleteApiKeyMutation } from '@/hooks/use-api-keys';
+import { useApiKeys, useDeleteApiKeyMutation, useExportKeysMutation } from '@/hooks/use-api-keys';
 
 interface ApiKeyTableProps {
     teamId: number;
@@ -114,6 +115,43 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
     }
 
     const deleteMutation = useDeleteApiKeyMutation(teamId);
+    const exportMutation = useExportKeysMutation();
+
+    async function handleExport() {
+        if (totalKeys === 0) return;
+        const result = await exportMutation.mutateAsync(teamId);
+        if (!result.success || !result.data) return;
+
+        const envContent = result.data
+            .map((entry) => `${entry.name}="${entry.value}"`)
+            .join('\n');
+
+        try {
+            const handle = await (window as any).showSaveFilePicker({
+                suggestedName: '.env',
+                types: [{
+                    description: 'Environment File',
+                    accept: { 'text/plain': ['.env'] },
+                }],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(envContent);
+            await writable.close();
+            toast.success('Downloaded .env file');
+        } catch (err: any) {
+            if (err?.name === 'AbortError') return;
+            const blob = new Blob([envContent], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'keybase.env';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            toast.success('Downloaded keybase.env');
+        }
+    }
 
     async function handleDelete() {
         if (!deleteCandidate) return;
@@ -156,10 +194,24 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
                     <CardDescription className="font-medium">Decrypted keys are never persisted in cleartext.</CardDescription>
                 </div>
                 {totalKeys > 0 && (
-                    <div className="flex items-center bg-white border border-border-light rounded-full px-3 py-1">
-                        <span className="text-xs font-medium text-forest/40 uppercase tracking-wider leading-none">
-                            Total Keys : <span className="text-forest ml-1">{totalKeys}</span>
-                        </span>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center bg-white border border-border-light rounded-full px-3 py-1">
+                            <span className="text-xs font-medium text-forest/40 uppercase tracking-wider leading-none">
+                                Total Keys : <span className="text-forest ml-1">{totalKeys}</span>
+                            </span>
+                        </div>
+                        <button
+                            onClick={handleExport}
+                            disabled={exportMutation.isPending}
+                            className="h-8 w-8 rounded-full border border-border-light bg-white flex items-center justify-center text-forest hover:bg-bg-muted hover:border-sage transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            title="Export as .env"
+                        >
+                            {exportMutation.isPending ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                                <Download className="w-3.5 h-3.5" />
+                            )}
+                        </button>
                     </div>
                 )}
             </CardHeader>

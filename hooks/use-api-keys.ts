@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { fetchApiKeys, fetchUserTeams } from '@/lib/api/fetch';
 import { createApiKeyAction } from '@/app/api-key/create/action';
 import { deleteApiKeyAction } from '@/app/api-key/delete/action';
+import { exportKeysAction } from '@/app/api-key/export/action';
 
 export function useApiKeys(teamId: number) {
     return useInfiniteQuery({
@@ -65,6 +66,19 @@ export function useDeleteApiKeyMutation(teamId: number) {
         onSuccess: () => {
             toast.success('API key deleted successfully');
             queryClient.invalidateQueries({ queryKey: ['api-keys', teamId] });
+        },
+        onError: (error: Error) => {
+            toast.error(error.message);
+        },
+    });
+}
+
+export function useExportKeysMutation() {
+    return useMutation({
+        mutationFn: async (teamId: number) => {
+            const result = await exportKeysAction(teamId);
+            if (result.error) throw new Error(result.error);
+            return result;
         },
         onError: (error: Error) => {
             toast.error(error.message);
