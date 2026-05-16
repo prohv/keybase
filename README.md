@@ -10,6 +10,8 @@ Built as a full-stack technical assignment focusing on security-first architectu
 
 * **AES-256 Encryption**: Each key is encrypted with a unique Initialization Vector before hitting our database. Keys are never stored or logged in plain text.
 * **Team Access Control**: Admins manage team creation and generate unique 8-character hex join codes. Users access shared vaults only after joining a valid team.
+* **Google OAuth**: Sign in or sign up with Google — no password needed. Profile picture shown in dashboard for OAuth users.
+* **.env Export**: One-click download of all team API keys as a `.env` file.
 * **Provider Detection**: Automatic detection of API providers (OpenAI, Anthropic, Google Cloud, AWS, Azure, etc.) from key names.
 * **Audit Logging**: Keep track of who created, revealed, and deleted keys. Complete visibility into your team's security posture.
 * **Full CRUD Lifecycle**: Secure management for API keys including creation, listing, secure reveal, and permanent deletion.
@@ -39,14 +41,14 @@ Built as a full-stack technical assignment focusing on security-first architectu
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         USER BROWSER                            │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
-│  │ Login Form  │  │ Dashboard   │  │ API Key Management UI   │ │
-│  └──────┬──────┘  └──────┬──────┘  └───────────┬─────────────┘ │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
+│  │ Login Form  │  │ Dashboard   │  │ API Key Management UI   │  │
+│  └──────┬──────┘  └──────┬──────┘  └───────────┬─────────────┘  │
 │         │                │                      │               │
 │         ▼                ▼                      ▼               │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │              React Query Hooks (Client State)            │  │
-│  └──────────────────────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │              React Query Hooks (Client State)            │   │
+│  └──────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                               │
          ┌────────────────────┼────────────────────┐
@@ -82,13 +84,17 @@ Built as a full-stack technical assignment focusing on security-first architectu
 
 ### Data Flow
 
-1. **Authentication Flow**: User submits credentials → Server Action validates → JWT signed → httpOnly cookie set → Session retrieved via `getSession()` on subsequent requests.
+1. **Authentication Flow (Email/Password)**: User submits credentials → Server Action validates → bcrypt compares → JWT signed → httpOnly cookie set → Session retrieved via `getSession()` on subsequent requests.
 
-2. **API Key Creation**: User submits key name + value → Server action encrypts with AES-256-CBC → Stores `encrypted_key` + `iv` (base64) in database → Key never stored in plaintext.
+2. **Authentication Flow (Google OAuth)**: User clicks "Sign in with Google" → Redirected to Google consent → Google redirects to callback → Code exchanged for id_token → User upserted in DB (linked by `oauth_id` or merged by `email`) → JWT signed with `name` + `avatarUrl` → httpOnly cookie set → Redirected to `/dashboard`.
 
-3. **Key Reveal**: Authorized user requests reveal → Server verifies team membership → Decrypts using stored IV → Returns plaintext once (not persisted in client state).
+3. **API Key Creation**: User submits key name + value → Server action encrypts with AES-256-CBC → Stores `encrypted_key` + `iv` (base64) in database → Key never stored in plaintext.
 
-4. **Team Management**: Admin creates team → 8-char hex code generated (`crypto.randomBytes(4)`) → Users join via code → `team_members` junction table links users to teams.
+4. **Key Reveal**: Authorized user requests reveal → Server verifies team membership → Decrypts using stored IV → Returns plaintext once (not persisted in client state).
+
+5. **Key Export (.env)**: User clicks Export button → Server action verifies membership → Fetches all keys → Decrypts each → Returns name-value pairs → Browser downloads `.env` file via File System Access API.
+
+6. **Team Management**: Admin creates team → 8-char hex code generated (`crypto.randomBytes(4)`) → Users join via code → `team_members` junction table links users to teams.
 
 ---
 
@@ -101,7 +107,10 @@ Built as a full-stack technical assignment focusing on security-first architectu
 |--------|------|-------------|
 | id | serial | PRIMARY KEY |
 | email | text | UNIQUE, NOT NULL |
-| password_hash | text | NOT NULL (bcrypt, 12 rounds) |
+| password_hash | text | nullable (null for OAuth users) (bcrypt, 12 rounds) |
+| oauth_id | text | UNIQUE, nullable (Google `sub`) |
+| name | text | nullable (display name from OAuth) |
+| avatar_url | text | nullable (profile picture from OAuth) |
 | role | text | 'admin' \| 'user', default 'user' |
 | created_at | timestamp | default now() |
 
@@ -142,6 +151,8 @@ keybase/
 ├── app/                      # Next.js App Router
 │   ├── api/                  # REST API Endpoints
 │   │   ├── auth/             # /api/auth/login, /api/auth/register
+│   │   │   └── oauth/
+│   │   │       └── google/   # /api/auth/oauth/google (redirect + callback)
 │   │   ├── team/             # /api/team/create, /api/team/join
 │   │   ├── api-key/          # /api/api-key/{create,list,reveal,delete}
 │   │   ├── docs/             # Swagger UI endpoint
@@ -149,16 +160,16 @@ keybase/
 │   ├── auth/                 # Auth pages (login, register, logout)
 │   ├── dashboard/            # Protected dashboard (team vault UI)
 │   ├── team/                 # Team pages (create, join)
-│   ├── api-key/              # Server actions for API keys
+│   ├── api-key/              # Server actions for API keys (create, reveal, delete, export)
 │   ├── layout.tsx            # Root layout with providers
 │   ├── page.tsx              # Landing page
 │   └── providers.tsx         # React Query provider
 ├── components/
-│   ├── ui/                   # shadcn/ui + TeamCodeDisplay, UserAvatar
+│   ├── ui/                   # shadcn/ui + UserAvatar, AuthDivider, OAuthButton
 │   ├── api-key/              # ApiKeyForm, ApiKeyTable
 │   └── landing/              # Header, HeroSection, Ticker, FeatureGrid, HowItWorks, CTASection
 ├── hooks/                    # React Query hooks
-│   ├── use-api-keys.ts       # Infinite query for paginated keys
+│   ├── use-api-keys.ts       # Infinite query + CRUD mutations + export mutation
 │   ├── use-auth.ts           # Login/register mutations
 │   ├── use-team.ts           # Join team mutation
 │   └── use-mobile.ts         # Mobile detection
@@ -168,6 +179,7 @@ keybase/
 │   │   └── fetch.ts          # Server-side fetch helpers
 │   ├── encryption.ts         # AES-256-CBC encrypt/decrypt
 │   ├── jwt.ts                # JWT sign/verify, getSession, getCurrentUser
+│   ├── oauth.ts              # Google OAuth helpers (auth URL, token exchange, id_token decode)
 │   ├── providers.ts          # API provider detection (logos, names)
 │   └── utils.ts              # cn() utility for class merging
 ├── src/db/
@@ -198,6 +210,8 @@ All API routes use **Bearer token authentication** via `Authorization: Bearer <t
 |----------|--------|---------------|-------------|
 | `/api/auth/login` | POST | No | Login, returns JWT token |
 | `/api/auth/register` | POST | No | Register new user |
+| `/api/auth/oauth/google` | GET | No | Redirect to Google OAuth consent screen |
+| `/api/auth/oauth/google/callback` | GET | No | Google OAuth callback → upsert user → JWT cookie |
 | `/api/team/create` | POST | Yes | Create team, returns team code |
 | `/api/team/join` | POST | Yes | Join team via code |
 | `/api/api-key/create` | POST | Yes | Create encrypted API key |
@@ -302,6 +316,7 @@ API documentation available at http://localhost:3000/api/docs.
 | `useUserTeams()` | Fetch user's teams |
 | `useCreateApiKeyMutation()` | Create key with automatic invalidation |
 | `useDeleteApiKeyMutation(teamId)` | Delete key |
+| `useExportKeysMutation()` | Export all keys as .env file |
 | `useLoginMutation()`, `useRegisterMutation()` | Auth mutations |
 | `useJoinTeamMutation()` | Join team mutation |
 
@@ -319,6 +334,7 @@ The app uses **Next.js Server Actions** for form submissions:
 | `createApiKeyAction` | `app/api-key/create/action.ts` | Create encrypted key |
 | `revealApiKeyAction` | `app/api-key/reveal/action.ts` | Decrypt and reveal key |
 | `deleteApiKeyAction` | `app/api-key/delete/action.ts` | Delete key permanently |
+| `exportKeysAction` | `app/api-key/export/action.ts` | Bulk decrypt and return all keys as name-value pairs |
 | `createTeamAction` | `app/team/create/action.ts` | Create team |
 | `joinTeamAction` | `app/team/join/action.ts` | Join team via code |
 
@@ -356,6 +372,9 @@ The app uses **Next.js Server Actions** for form submissions:
 | `DATABASE_URL` | PostgreSQL connection string | Yes |
 | `JWT_SECRET` | Secret key for JWT signing | Yes |
 | `ENCRYPTION_KEY` | 32-byte base64 key for AES encryption | Yes |
+| `OAUTH_CLIENT_ID` | Google OAuth client ID | Yes (for OAuth) |
+| `OAUTH_CLIENT_SECRET` | Google OAuth client secret | Yes (for OAuth) |
+| `NEXT_PUBLIC_API_URL` | Public URL of the app (used for OAuth redirects) | Yes |
 
 ---
 
