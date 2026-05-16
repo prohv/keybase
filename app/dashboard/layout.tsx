@@ -17,10 +17,11 @@ import {
     SidebarInset,
     SidebarTrigger
 } from '@/components/ui/sidebar';
-import { KeyRound, Users, LogOut, LayoutDashboard, PlusCircle, UserPlus, House } from 'lucide-react';
+import { LayoutDashboard, House, LogOut } from 'lucide-react';
 import Image from 'next/image';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { logoutAction } from '@/app/auth/logout/action';
+import { TeamSidebar } from '@/components/team/team-sidebar';
 import Link from 'next/link';
 
 export default async function DashboardLayout({
@@ -34,7 +35,6 @@ export default async function DashboardLayout({
         redirect('/auth/login');
     }
 
-    // Fetch teams for the sidebar
     const userTeams = await db
         .select({
             id: teams.id,
@@ -80,55 +80,7 @@ export default async function DashboardLayout({
                             </SidebarGroupContent>
                         </SidebarGroup>
 
-                        <SidebarGroup className="mt-4">
-                            <SidebarGroupLabel className="text-forest/60 font-medium px-4">
-                                Your Teams
-                            </SidebarGroupLabel>
-                            <SidebarGroupContent className="p-2">
-                                <SidebarMenu>
-                                    {userTeams.length === 0 ? (
-                                        <div className="px-4 py-3 text-sm text-muted-foreground italic">No teams yet</div>
-                                    ) : (
-                                        userTeams.map((team) => (
-                                            <SidebarMenuItem key={team.id}>
-                                                <SidebarMenuButton asChild>
-                                                    <Link href={`/dashboard?team=${team.id}`} className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-bg-muted rounded-lg group">
-                                                        <Users className="w-4 h-4 text-forest/40 group-hover:text-forest" />
-                                                        <span className="font-medium truncate">{team.name}</span>
-                                                    </Link>
-                                                </SidebarMenuButton>
-                                            </SidebarMenuItem>
-                                        ))
-                                    )}
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-
-                        <SidebarGroup className="mt-4">
-                            <SidebarGroupLabel className="text-forest/60 font-medium px-4">
-                                Actions
-                            </SidebarGroupLabel>
-                            <SidebarGroupContent className="p-2">
-                                <SidebarMenu>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link href="/team/create" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-bg-muted rounded-lg">
-                                                <PlusCircle className="w-4 h-4" />
-                                                <span className="font-medium">Create Team</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild>
-                                            <Link href="/team/join" className="flex items-center gap-3 px-4 py-2 text-olive hover:bg-bg-muted rounded-lg">
-                                                <UserPlus className="w-4 h-4" />
-                                                <span className="font-medium">Join Team</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
+                        <TeamSidebar teams={userTeams} />
                     </SidebarContent>
                 </Sidebar>
 
