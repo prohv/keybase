@@ -143,9 +143,9 @@ export default async function DashboardLayout({
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-3 pr-4 border-r border-border-light">
                                 <div className="text-right hidden sm:block">
-                                    <div className="text-base font-heading font-medium text-forest leading-none">{user.email.split('@')[0]}</div>
+                                    <div className="text-base font-heading font-medium text-forest leading-none">{user.name || user.email.split('@')[0]}</div>
                                 </div>
-                                <UserAvatar email={user.email} initials={user.email.substring(0, 2).toUpperCase()} />
+                                <UserAvatar email={user.email} initials={user.email.substring(0, 2).toUpperCase()} avatarUrl={user.avatarUrl} />
                             </div>
 
                             <form action={logoutAction}>
