@@ -1,31 +1,28 @@
 'use server';
 
 import { db } from '@/src/db';
-import { apiKeys, teamMembers } from '@/src/db/schema';
+import { apiKeys, projects, teamMembers } from '@/src/db/schema';
 import { getCurrentUser } from '@/lib/jwt';
 import { decrypt } from '@/lib/encryption';
 import { eq, and, desc } from 'drizzle-orm';
 
-export async function exportKeysAction(teamId: number) {
+export async function exportKeysAction(projectId: number) {
     const user = await getCurrentUser();
     if (!user) {
         return { error: 'Authentication required' };
     }
 
     try {
-        const membership = await db.query.teamMembers.findFirst({
-            where: and(
-                eq(teamMembers.userId, user.userId),
-                eq(teamMembers.teamId, teamId)
-            ),
-        });
+        const project = await db.query.projects.findFirst({ where: eq(projects.id, projectId) });
+        if (!project) return { error: 'Project not found' };
 
-        if (!membership) {
-            return { error: 'You are not a member of this team' };
-        }
+        const membership = await db.query.teamMembers.findFirst({
+            where: and(eq(teamMembers.userId, user.userId), eq(teamMembers.teamId, project.teamId!)),
+        });
+        if (!membership) return { error: 'Access denied' };
 
         const keys = await db.query.apiKeys.findMany({
-            where: eq(apiKeys.teamId, teamId),
+            where: eq(apiKeys.projectId, projectId),
             orderBy: [desc(apiKeys.createdAt)],
         });
 
