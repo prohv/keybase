@@ -9,9 +9,11 @@ Built as a full-stack technical assignment focusing on security-first architectu
 ## Features
 
 * **AES-256 Encryption**: Each key is encrypted with a unique Initialization Vector before hitting our database. Keys are never stored or logged in plain text.
+* **Project Organization**: Keys are organized into projects within teams. Each project has its own isolated vault.
+* **Access Tokens**: Generate `kb_xxx` tokens scoped to a project — used by CLI and CI/CD pipelines for programmatic access. Read-only, time-bound.
 * **Team Access Control**: Admins manage team creation and generate unique 8-character hex join codes. Users access shared vaults only after joining a valid team.
 * **Google OAuth**: Sign in or sign up with Google — no password needed. Profile picture shown in dashboard for OAuth users.
-* **.env Export**: One-click download of all team API keys as a `.env` file.
+* **.env Export**: One-click download of all project API keys as a `.env` file.
 * **Provider Detection**: Automatic detection of API providers (OpenAI, Anthropic, Google Cloud, AWS, Azure, etc.) from key names.
 * **Audit Logging**: Keep track of who created, revealed, and deleted keys. Complete visibility into your team's security posture.
 * **Full CRUD Lifecycle**: Secure management for API keys including creation, listing, secure reveal, and permanent deletion.
@@ -88,13 +90,17 @@ Built as a full-stack technical assignment focusing on security-first architectu
 
 2. **Authentication Flow (Google OAuth)**: User clicks "Sign in with Google" → Redirected to Google consent → Google redirects to callback → Code exchanged for id_token → User upserted in DB (linked by `oauth_id` or merged by `email`) → JWT signed with `name` + `avatarUrl` → httpOnly cookie set → Redirected to `/dashboard`.
 
-3. **API Key Creation**: User submits key name + value → Server action encrypts with AES-256-CBC → Stores `encrypted_key` + `iv` (base64) in database → Key never stored in plaintext.
+3. **Project Organization**: Team creator creates a team → user creates projects under the team → API keys are scoped to a project. Each project has its own vault and access tokens.
 
-4. **Key Reveal**: Authorized user requests reveal → Server verifies team membership → Decrypts using stored IV → Returns plaintext once (not persisted in client state).
+4. **API Key Creation**: User submits key name + value under a project → Server action encrypts with AES-256-CBC → Stores `encrypted_key` + `iv` + `project_id` in database → Key never stored in plaintext.
 
-5. **Key Export (.env)**: User clicks Export button → Server action verifies membership → Fetches all keys → Decrypts each → Returns name-value pairs → Browser downloads `.env` file via File System Access API.
+5. **Key Reveal**: Authorized user requests reveal → Server verifies team membership via project → Decrypts using stored IV → Returns plaintext once (not persisted in client state).
 
-6. **Team Management**: Admin creates team → 8-char hex code generated (`crypto.randomBytes(4)`) → Users join via code → `team_members` junction table links users to teams.
+6. **Key Export (.env)**: User clicks Export button → Server action verifies membership → Fetches all keys for the project → Decrypts each → Returns name-value pairs → Browser downloads `.env` file via File System Access API.
+
+7. **Access Token Flow**: User clicks "Generate Tokens" → Chooses name + expiry → Server generates `kb_<64hex>` token → SHA-256 hash stored in `session_tokens` → Raw token shown once → CLI uses Bearer `kb_xxx` to authenticate → Server hashes incoming token and validates against DB → Read-only access to project keys.
+
+8. **Team Management**: Admin creates team → 8-char hex code generated (`crypto.randomBytes(4)`) → Users join via code → `team_members` junction table links users to teams.
 
 ---
 
@@ -139,7 +145,30 @@ Built as a full-stack technical assignment focusing on security-first architectu
 | encrypted_key | text | NOT NULL (AES-256-CBC encrypted) |
 | iv | text | NOT NULL (base64 encoded, 16 bytes) |
 | team_id | integer | FK → teams.id |
+| project_id | integer | FK → projects.id, nullable (CASCADE delete) |
 | created_by | integer | FK → users.id |
+| created_at | timestamp | default now() |
+
+#### `projects`
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | serial | PRIMARY KEY |
+| name | text | NOT NULL |
+| team_id | integer | NOT NULL, FK → teams.id (CASCADE delete) |
+| created_by | integer | NOT NULL, FK → users.id |
+| created_at | timestamp | default now() |
+
+#### `session_tokens`
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | serial | PRIMARY KEY |
+| user_id | integer | NOT NULL, FK → users.id |
+| project_id | integer | NOT NULL, FK → projects.id (CASCADE delete) |
+| name | text | NOT NULL |
+| token_hash | text | NOT NULL, UNIQUE (SHA-256 of `kb_xxx`) |
+| scopes | text | DEFAULT 'read' |
+| expires_at | timestamp | nullable |
+| last_used_at | timestamp | nullable |
 | created_at | timestamp | default now() |
 
 ---
@@ -153,32 +182,35 @@ keybase/
 │   │   ├── auth/             # /api/auth/login, /api/auth/register
 │   │   │   └── oauth/
 │   │   │       └── google/   # /api/auth/oauth/google (redirect + callback)
+│   │   ├── project/          # /api/project/{create,list,delete}
+│   │   ├── token/            # /api/token/{create,list,revoke}
 │   │   ├── team/             # /api/team/create, /api/team/join
 │   │   ├── api-key/          # /api/api-key/{create,list,reveal,delete}
 │   │   ├── docs/             # Swagger UI endpoint
 │   │   └── openapi.json/     # OpenAPI specification
 │   ├── auth/                 # Auth pages (login, register, logout)
-│   ├── dashboard/            # Protected dashboard (team vault UI)
-│   ├── team/                 # Team pages (create, join)
+│   ├── dashboard/            # Protected dashboard (project vault UI)
+│   ├── team/                 # Team pages (create, join, delete action)
 │   ├── api-key/              # Server actions for API keys (create, reveal, delete, export)
 │   ├── layout.tsx            # Root layout with providers
 │   ├── page.tsx              # Landing page
 │   └── providers.tsx         # React Query provider
 ├── components/
 │   ├── ui/                   # shadcn/ui + UserAvatar, AuthDivider, OAuthButton
+│   ├── team/                 # TeamSidebar, CreateProjectForm, TokenManager, InviteButton
 │   ├── api-key/              # ApiKeyForm, ApiKeyTable
 │   └── landing/              # Header, HeroSection, Ticker, FeatureGrid, HowItWorks, CTASection
 ├── hooks/                    # React Query hooks
-│   ├── use-api-keys.ts       # Infinite query + CRUD mutations + export mutation
+│   ├── use-api-keys.ts       # Infinite query + CRUD mutations + export mutation (project-scoped)
 │   ├── use-auth.ts           # Login/register mutations
 │   ├── use-team.ts           # Join team mutation
 │   └── use-mobile.ts         # Mobile detection
 ├── lib/
 │   ├── fonts.ts              # Cabinet Grotesk + General Sans local font config
 │   ├── api/
-│   │   └── fetch.ts          # Server-side fetch helpers
+│   │   └── fetch.ts          # Server-side fetch helpers (project-scoped)
 │   ├── encryption.ts         # AES-256-CBC encrypt/decrypt
-│   ├── jwt.ts                # JWT sign/verify, getSession, getCurrentUser
+│   ├── jwt.ts                # JWT sign/verify, verifyAuth (JWT + session tokens), getSession
 │   ├── oauth.ts              # Google OAuth helpers (auth URL, token exchange, id_token decode)
 │   ├── providers.ts          # API provider detection (logos, names)
 │   └── utils.ts              # cn() utility for class merging
@@ -214,10 +246,16 @@ All API routes use **Bearer token authentication** via `Authorization: Bearer <t
 | `/api/auth/oauth/google/callback` | GET | No | Google OAuth callback → upsert user → JWT cookie |
 | `/api/team/create` | POST | Yes | Create team, returns team code |
 | `/api/team/join` | POST | Yes | Join team via code |
-| `/api/api-key/create` | POST | Yes | Create encrypted API key |
-| `/api/api-key/list?teamId=X` | GET | Yes | List keys for team (paginated) |
+| `/api/project/create` | POST | Yes (JWT) | Create project under a team |
+| `/api/project/list?teamId=X` | GET | Yes | List projects for a team |
+| `/api/project/delete` | POST | Yes (JWT, creator) | Delete a project and its keys |
+| `/api/token/create` | POST | Yes (JWT) | Create session token (`kb_xxx`) for a project |
+| `/api/token/list?projectId=X` | GET | Yes | List tokens for a project |
+| `/api/token/revoke` | POST | Yes (JWT) | Revoke a token |
+| `/api/api-key/create` | POST | Yes (JWT) | Create encrypted API key (requires `projectId`) |
+| `/api/api-key/list?projectId=X` | GET | Yes | List keys for a project (paginated) |
 | `/api/api-key/reveal` | POST | Yes | Decrypt and reveal key |
-| `/api/api-key/delete` | DELETE | Yes | Delete key permanently |
+| `/api/api-key/delete` | DELETE | Yes (JWT) | Delete key permanently |
 | `/api/docs` | GET | No | Swagger UI documentation |
 | `/api/openapi.json` | GET | No | OpenAPI 3.0 specification |
 
@@ -289,13 +327,19 @@ API documentation available at http://localhost:3000/api/docs.
 
 2. **Team-Based Access Control**: Membership verification on every operation. Users can only access keys from teams they belong to.
 
-3. **Secure Cookie Handling**: JWT stored in httpOnly cookie with `secure` flag (production), `sameSite=lax`, 7-day expiry.
+3. **Project Isolation**: Keys are scoped to projects within teams. Operations filter by `project_id` — users can only access keys in projects under teams they belong to.
 
-4. **Password Security**: bcryptjs with 12 salt rounds for password hashing.
+4. **Session Token Auth**: API tokens (`kb_xxx`) are stored as SHA-256 hashes in the database. Raw tokens are shown once and never logged. Tokens are read-only and can be time-bound with configurable expiry.
 
-5. **Input Validation**: All inputs validated with Zod schemas before processing.
+5. **Cookie & Bearer Auth**: The app supports both httpOnly cookies (browser) and Bearer tokens (CLI/API). The `verifyAuth()` function checks headers first, then falls back to cookies — enabling both browser and programmatic access through a single code path.
 
-6. **One-Time Reveal**: Keys displayed only when explicitly requested, encouraging immediate secure storage by users.
+6. **Secure Cookie Handling**: JWT stored in httpOnly cookie with `secure` flag (production), `sameSite=lax`, 7-day expiry.
+
+7. **Password Security**: bcryptjs with 12 salt rounds for password hashing.
+
+8. **Input Validation**: All inputs validated with Zod schemas before processing.
+
+9. **One-Time Reveal**: Keys displayed only when explicitly requested, encouraging immediate secure storage by users.
 
 ---
 
@@ -312,11 +356,11 @@ API documentation available at http://localhost:3000/api/docs.
 
 | Hook | Purpose |
 |------|---------|
-| `useApiKeys(teamId)` | Infinite query for paginated keys |
+| `useApiKeys(projectId)` | Infinite query for paginated keys scoped to a project |
 | `useUserTeams()` | Fetch user's teams |
-| `useCreateApiKeyMutation()` | Create key with automatic invalidation |
-| `useDeleteApiKeyMutation(teamId)` | Delete key |
-| `useExportKeysMutation()` | Export all keys as .env file |
+| `useCreateApiKeyMutation(projectId)` | Create key under a project |
+| `useDeleteApiKeyMutation(projectId)` | Delete key (invalidates project query) |
+| `useExportKeysMutation()` | Export all keys for a project as .env |
 | `useLoginMutation()`, `useRegisterMutation()` | Auth mutations |
 | `useJoinTeamMutation()` | Join team mutation |
 
@@ -331,10 +375,11 @@ The app uses **Next.js Server Actions** for form submissions:
 | `loginAction` | `app/auth/login/action.ts` | Form-based login |
 | `registerAction` | `app/auth/register/action.ts` | Form-based registration |
 | `logoutAction` | `app/auth/logout/action.ts` | Clear session cookie |
-| `createApiKeyAction` | `app/api-key/create/action.ts` | Create encrypted key |
+| `createApiKeyAction` | `app/api-key/create/action.ts` | Create encrypted key (requires `projectId`) |
 | `revealApiKeyAction` | `app/api-key/reveal/action.ts` | Decrypt and reveal key |
 | `deleteApiKeyAction` | `app/api-key/delete/action.ts` | Delete key permanently |
-| `exportKeysAction` | `app/api-key/export/action.ts` | Bulk decrypt and return all keys as name-value pairs |
+| `exportKeysAction` | `app/api-key/export/action.ts` | Bulk decrypt and return all keys for a project |
+| `deleteTeamsAction` | `app/team/delete/action.ts` | Delete team with cascade (creator only) |
 | `createTeamAction` | `app/team/create/action.ts` | Create team |
 | `joinTeamAction` | `app/team/join/action.ts` | Join team via code |
 
