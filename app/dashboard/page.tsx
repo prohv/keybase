@@ -9,7 +9,8 @@ import { ShieldAlert, Key, UserPlus, Plus } from 'lucide-react';
 import { ApiKeyForm } from '@/components/api-key/api-key-form';
 import { ApiKeyTable } from '@/components/api-key/api-key-table';
 import { CreateProjectForm } from '@/components/team/create-project-form';
-import { TeamCodeDisplay } from '@/components/ui/team-code-display';
+import { TokenManager } from '@/components/team/token-manager';
+import { InviteButton } from '@/components/team/invite-button';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -128,12 +129,10 @@ export default async function DashboardPage(props: DashboardPageProps) {
           </p>
         </div>
 
-        {activeTeam.createdBy === user.userId && (
-          <div className="flex flex-col items-start md:items-end gap-2">
-            <span className="text-xs font-semibold text-green-mid uppercase tracking-wider mr-1">Invite Members</span>
-            <div className="flex items-center p-1 bg-bg-muted border border-border-light rounded-lg w-full sm:w-auto">
-              <TeamCodeDisplay code={activeTeam.teamCode} />
-            </div>
+        {activeTeam && (
+          <div className="flex items-center gap-2">
+            {activeTeam.createdBy === user.userId && <InviteButton teamCode={activeTeam.teamCode} />}
+            <TokenManager projectId={activeProject.id} />
           </div>
         )}
       </div>
