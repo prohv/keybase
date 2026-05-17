@@ -1,4 +1,4 @@
-import { Lock, Users, Scan, ShieldCheck, RefreshCw, BookOpen } from 'lucide-react';
+import { Lock, Users, Scan, ShieldCheck, RefreshCw, Key } from 'lucide-react';
 
 const features = [
   {
@@ -9,15 +9,15 @@ const features = [
   },
   {
     icon: Users,
-    title: "Team Access Control",
+    title: "Team & Project Access",
     description:
-      "Admins manage team creation and generate unique join codes. Users access shared vaults only after joining a valid team.",
+      "Organize keys into projects within teams. Each project has its own isolated vault. Only team members can access its keys.",
   },
   {
     icon: Scan,
     title: "Provider Detection",
     description:
-      "Automatic detection of API providers from key names — OpenAI, Anthropic, Google Cloud, AWS, Azure, and more.",
+      "Automatic detection of API providers from key names: OpenAI, Anthropic, Google Cloud, AWS, Azure, and more.",
   },
   {
     icon: ShieldCheck,
@@ -29,13 +29,13 @@ const features = [
     icon: RefreshCw,
     title: "Full CRUD Lifecycle",
     description:
-      "Secure management for API keys including creation, listing, secure reveal, and permanent deletion.",
+      "Secure management for API keys including creation, listing, secure reveal, and permanent deletion per project.",
   },
   {
-    icon: BookOpen,
-    title: "API Documentation",
+    icon: Key,
+    title: "Access Tokens",
     description:
-      "Full Swagger/OpenAPI documentation at /api/docs. Type-safe validation with Zod end-to-end.",
+      "Generate scoped, time-bound API tokens for programmatic access. Uses Bearer auth, perfect for CLI tools and CI/CD pipelines.",
   },
 ];
 

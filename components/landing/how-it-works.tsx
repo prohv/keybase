@@ -2,24 +2,24 @@ import { ChevronDown } from "lucide-react";
 
 const steps = [
   {
-    label: "Create a Team",
+    label: "Create a Team & Project",
     description:
-      "Admins create a team, and a unique 8-character hex join code is generated automatically. You're in control of who gets access.",
+      "Admins create a team and generate a unique join code. Organize keys into projects within the team, each project has its own isolated vault.",
   },
   {
     label: "Invite Members",
     description:
-      "Share the join code with your teammates. Users gain access to shared vaults only after joining via a valid code.",
+      "Share the join code with your teammates. Users gain access to projects only after joining via a valid code.",
   },
   {
     label: "Store Keys Securely",
     description:
-      "API keys are encrypted with AES-256-CBC before database entry. Keys are never stored or logged in plain text.",
+      "API keys are encrypted with AES-256-CBC before database entry. Keys are scoped to a project and never stored or logged in plain text.",
   },
   {
-    label: "Reveal On Demand",
+    label: "Automate with Tokens",
     description:
-      "Authorized users can decrypt and reveal keys one at a time. Keys are never persisted in browser state or query cache.",
+      "Generate scoped, time-bound access tokens for each project. Use the Bearer token in CLI or CI/CD to fetch keys programmatically.",
   },
 ];
 
@@ -51,7 +51,7 @@ export function HowItWorks() {
           {steps.map((step, i) => (
             <details
               key={step.label}
-              className="group border border-border-light rounded-2xl open:bg-bg-muted transition-colors"
+              className="group border border-border-light rounded-2xl transition-colors"
             >
               <summary className="flex items-center justify-between px-5 py-4 cursor-pointer list-none">
                 <div className="flex items-center gap-4">
@@ -65,7 +65,7 @@ export function HowItWorks() {
                 <ChevronDown className="w-4 h-4 text-green-mid transition-transform duration-300 group-open:rotate-180" />
               </summary>
               <div className="px-5 pb-5 pl-16">
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground font-medium leading-relaxed">
                   {step.description}
                 </p>
               </div>
