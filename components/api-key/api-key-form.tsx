@@ -10,16 +10,15 @@ import { useCreateApiKeyMutation } from '@/hooks/use-api-keys';
 import { getProviderInfo } from '@/lib/providers';
 
 interface ApiKeyFormProps {
-    teamId: number;
+    projectId: number;
 }
 
-export function ApiKeyForm({ teamId }: ApiKeyFormProps) {
+export function ApiKeyForm({ projectId }: ApiKeyFormProps) {
     const [name, setName] = useState('');
     const provider = getProviderInfo(name);
-    const createMutation = useCreateApiKeyMutation();
+    const createMutation = useCreateApiKeyMutation(projectId);
 
     async function handleSubmit(formData: FormData) {
-        formData.append('teamId', teamId.toString());
         createMutation.mutate(formData, {
             onSuccess: () => {
                 (document.getElementById('api-key-form') as HTMLFormElement)?.reset();

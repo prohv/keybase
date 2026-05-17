@@ -1,58 +1,44 @@
 'use server';
 
 import { db } from '@/src/db';
-import { apiKeys, teamMembers, teams } from '@/src/db/schema';
+import { apiKeys, teamMembers, teams, projects } from '@/src/db/schema';
 import { getCurrentUser } from '@/lib/jwt';
 import { eq, and, desc, count } from 'drizzle-orm';
 
-export async function fetchApiKeys(teamId: number, page: number = 1, limit: number = 4) {
+export async function fetchApiKeys(projectId: number, page: number = 1, limit: number = 4) {
     const user = await getCurrentUser();
     if (!user) {
         return { error: 'Authentication required' };
     }
 
     try {
-        const membership = await db.query.teamMembers.findFirst({
-            where: and(
-                eq(teamMembers.userId, user.userId),
-                eq(teamMembers.teamId, teamId)
-            ),
-        });
+        const project = await db.query.projects.findFirst({ where: eq(projects.id, projectId) });
+        if (!project) return { error: 'Project not found' };
 
-        if (!membership) {
-            return { error: 'You are not a member of this team' };
-        }
+        const membership = await db.query.teamMembers.findFirst({
+            where: and(eq(teamMembers.userId, user.userId), eq(teamMembers.teamId, project.teamId!)),
+        });
+        if (!membership) return { error: 'Access denied' };
 
         const offset = (page - 1) * limit;
 
         const keys = await db.query.apiKeys.findMany({
-            where: eq(apiKeys.teamId, teamId as any),
-            columns: {
-                id: true,
-                name: true,
-                createdBy: true,
-                createdAt: true,
-            },
+            where: eq(apiKeys.projectId, projectId as any),
+            columns: { id: true, name: true, createdBy: true, createdAt: true },
             orderBy: [desc(apiKeys.createdAt)],
             limit,
             offset,
         });
 
-        // Get total count for this team
         const totalResult = await db
             .select({ value: count() })
             .from(apiKeys)
-            .where(eq(apiKeys.teamId, teamId as any));
-        
+            .where(eq(apiKeys.projectId, projectId as any));
+
         const total = Number(totalResult[0].value);
         const hasMore = offset + keys.length < total;
 
-        return {
-            keys,
-            page,
-            hasMore,
-            total,
-        };
+        return { keys, page, hasMore, total };
     } catch (error) {
         console.error('Failed to fetch API keys:', error);
         return { error: 'Failed to fetch API keys' };

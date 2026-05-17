@@ -7,18 +7,18 @@ import { createApiKeyAction } from '@/app/api-key/create/action';
 import { deleteApiKeyAction } from '@/app/api-key/delete/action';
 import { exportKeysAction } from '@/app/api-key/export/action';
 
-export function useApiKeys(teamId: number) {
+export function useApiKeys(projectId: number) {
     return useInfiniteQuery({
-        queryKey: ['api-keys', teamId],
+        queryKey: ['api-keys', projectId],
         queryFn: async ({ pageParam = 1 }) => {
-            const result = await fetchApiKeys(teamId, pageParam, 4);
+            const result = await fetchApiKeys(projectId, pageParam, 4);
             if (result.error) throw new Error(result.error);
             return result;
         },
         initialPageParam: 1,
         getNextPageParam: (lastPage) => lastPage.hasMore ? lastPage.page + 1 : undefined,
-        enabled: !!teamId,
-        staleTime: 1000 * 30, // 30 seconds
+        enabled: !!projectId,
+        staleTime: 1000 * 30,
     });
 }
 
@@ -30,23 +30,23 @@ export function useUserTeams() {
             if (result.error) throw new Error(result.error);
             return result.teams;
         },
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 1000 * 60 * 5,
     });
 }
 
-export function useCreateApiKeyMutation() {
+export function useCreateApiKeyMutation(projectId: number) {
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async (formData: FormData) => {
+            formData.set('projectId', String(projectId));
             const result = await createApiKeyAction(formData);
             if (result.error) throw new Error(result.error);
             return result;
         },
-        onSuccess: (_, variables) => {
-            const teamId = parseInt(variables.get('teamId') as string);
+        onSuccess: () => {
             toast.success('API key created successfully');
-            queryClient.invalidateQueries({ queryKey: ['api-keys', teamId] });
+            queryClient.invalidateQueries({ queryKey: ['api-keys', projectId] });
         },
         onError: (error: Error) => {
             toast.error(error.message);
@@ -54,7 +54,7 @@ export function useCreateApiKeyMutation() {
     });
 }
 
-export function useDeleteApiKeyMutation(teamId: number) {
+export function useDeleteApiKeyMutation(projectId: number) {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -65,7 +65,7 @@ export function useDeleteApiKeyMutation(teamId: number) {
         },
         onSuccess: () => {
             toast.success('API key deleted successfully');
-            queryClient.invalidateQueries({ queryKey: ['api-keys', teamId] });
+            queryClient.invalidateQueries({ queryKey: ['api-keys', projectId] });
         },
         onError: (error: Error) => {
             toast.error(error.message);
@@ -75,8 +75,8 @@ export function useDeleteApiKeyMutation(teamId: number) {
 
 export function useExportKeysMutation() {
     return useMutation({
-        mutationFn: async (teamId: number) => {
-            const result = await exportKeysAction(teamId);
+        mutationFn: async (projectId: number) => {
+            const result = await exportKeysAction(projectId);
             if (result.error) throw new Error(result.error);
             return result;
         },

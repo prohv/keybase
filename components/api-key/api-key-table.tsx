@@ -46,10 +46,10 @@ import { getProviderInfo } from '@/lib/providers';
 import { useApiKeys, useDeleteApiKeyMutation, useExportKeysMutation } from '@/hooks/use-api-keys';
 
 interface ApiKeyTableProps {
-    teamId: number;
+    projectId: number;
 }
 
-export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
+export function ApiKeyTable({ projectId }: ApiKeyTableProps) {
     const [revealingId, setRevealingId] = useState<number | null>(null);
     const [revealedValue, setRevealedValue] = useState<string | null>(null);
     const [isRevealOpen, setIsRevealOpen] = useState(false);
@@ -65,7 +65,7 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useApiKeys(teamId);
+    } = useApiKeys(projectId);
 
     const allKeys = data?.pages.flatMap(page => page.keys) || [];
     const loadedPagesCount = data?.pages.length || 0;
@@ -114,12 +114,12 @@ export function ApiKeyTable({ teamId }: ApiKeyTableProps) {
         }
     }
 
-    const deleteMutation = useDeleteApiKeyMutation(teamId);
+    const deleteMutation = useDeleteApiKeyMutation(projectId);
     const exportMutation = useExportKeysMutation();
 
     async function handleExport() {
         if (totalKeys === 0) return;
-        const result = await exportMutation.mutateAsync(teamId);
+        const result = await exportMutation.mutateAsync(projectId);
         if (!result.success || !result.data) return;
 
         const envContent = result.data
