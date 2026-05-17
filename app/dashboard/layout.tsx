@@ -8,16 +8,10 @@ import {
     Sidebar,
     SidebarContent,
     SidebarHeader,
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarGroupContent,
-    SidebarMenu,
-    SidebarMenuItem,
-    SidebarMenuButton,
     SidebarInset,
     SidebarTrigger
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, House, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import Image from 'next/image';
 import { UserAvatar } from '@/components/ui/user-avatar';
 import { logoutAction } from '@/app/auth/logout/action';
@@ -40,6 +34,7 @@ export default async function DashboardLayout({
             id: teams.id,
             name: teams.name,
             teamCode: teams.teamCode,
+            createdBy: teams.createdBy,
         })
         .from(teams)
         .innerJoin(teamMembers, eq(teams.id, teamMembers.teamId))
@@ -56,31 +51,7 @@ export default async function DashboardLayout({
                         </Link>
                     </SidebarHeader>
                     <SidebarContent>
-                        <SidebarGroup>
-                            <SidebarGroupLabel className="text-forest/60 font-medium px-4 pt-4">Navigation</SidebarGroupLabel>
-                            <SidebarGroupContent className="p-2">
-                                <SidebarMenu>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild tooltip="Home">
-                                            <Link href="/" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-bg-muted rounded-lg">
-                                                <House className="w-4 h-4" />
-                                                <span className="font-medium">Home</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                    <SidebarMenuItem>
-                                        <SidebarMenuButton asChild tooltip="Dashboard">
-                                            <Link href="/dashboard" className="flex items-center gap-3 px-4 py-2 text-forest hover:bg-bg-muted rounded-lg">
-                                                <LayoutDashboard className="w-4 h-4" />
-                                                <span className="font-medium">Overview</span>
-                                            </Link>
-                                        </SidebarMenuButton>
-                                    </SidebarMenuItem>
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </SidebarGroup>
-
-                        <TeamSidebar teams={userTeams} />
+                        <TeamSidebar teams={userTeams} currentUserId={user.userId} />
                     </SidebarContent>
                 </Sidebar>
 
