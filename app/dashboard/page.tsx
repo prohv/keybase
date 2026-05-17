@@ -1,39 +1,28 @@
 import { getCurrentUser } from '@/lib/jwt';
 import { db } from '@/src/db';
-import { teams, teamMembers } from '@/src/db/schema';
+import { teams, teamMembers, projects } from '@/src/db/schema';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Plus,
-  Copy,
-  ShieldAlert,
-  Key,
-  UserPlus
-} from 'lucide-react';
-import { getApiKeysAction } from '@/app/api-key/list/action';
+import { ShieldAlert, Key, UserPlus, Plus } from 'lucide-react';
 import { ApiKeyForm } from '@/components/api-key/api-key-form';
 import { ApiKeyTable } from '@/components/api-key/api-key-table';
+import { CreateProjectForm } from '@/components/team/create-project-form';
 import { TeamCodeDisplay } from '@/components/ui/team-code-display';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
 interface DashboardPageProps {
-  searchParams: Promise<{ team?: string }>;
+  searchParams: Promise<{ team?: string; project?: string }>;
 }
 
 export default async function DashboardPage(props: DashboardPageProps) {
-  const searchParams = await props.searchParams;
-  
-  console.log('[DashboardPage] Rendering - checking session');
+  const sp = await props.searchParams;
   const user = await getCurrentUser();
-  console.log('[DashboardPage] Session result:', user?.email || 'unauthenticated');
   if (!user) redirect('/auth/login');
 
-  // Fetch user's teams
   const userTeams = await db
     .select({
       id: teams.id,
@@ -53,48 +42,89 @@ export default async function DashboardPage(props: DashboardPageProps) {
         </div>
         <div className="space-y-2">
           <h2 className="text-3xl font-heading font-bold text-forest tracking-tight">No Vaults Found</h2>
-          <p className="text-muted-foreground text-lg max-w-sm font-medium">
-            Setup your first team vault to start securing your API keys.
-          </p>
+          <p className="text-muted-foreground text-lg max-w-sm font-medium">Setup your first team vault to start securing your API keys.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
           <Button asChild className="flex-1 h-24 bg-green-dark hover:bg-green-dark/90 text-white font-bold flex flex-col gap-2">
-            <Link href="/team/create">
-              <Plus className="w-6 h-6" />
-              <span>Create Team</span>
-            </Link>
+            <Link href="/team/create"><Plus className="w-6 h-6" /><span>Create Team</span></Link>
           </Button>
           <Button asChild variant="outline" className="flex-1 h-24 border-border-light hover:border-green-dark text-forest font-bold flex flex-col gap-2">
-            <Link href="/team/join">
-              <UserPlus className="w-6 h-6" />
-              <span>Join Team</span>
-            </Link>
+            <Link href="/team/join"><UserPlus className="w-6 h-6" /><span>Join Team</span></Link>
           </Button>
         </div>
       </div>
     );
   }
 
-  // Determine active team
-  const activeTeamId = searchParams.team ? parseInt(searchParams.team) : userTeams[0].id;
+  const activeTeamId = sp.team ? parseInt(sp.team) : userTeams[0].id;
   const activeTeam = userTeams.find(t => t.id === activeTeamId) || userTeams[0];
 
-  // Fetch API keys for active team
-  const keysResult = await getApiKeysAction(activeTeam.id);
-  const keys = keysResult.success && keysResult.data ? keysResult.data : [];
+  const userProjects = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.teamId, activeTeamId));
+
+  if (sp.project === 'new') {
+    return (
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border-light">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h2 className="text-3xl md:text-4xl font-heading font-bold text-forest tracking-tight">New Project</h2>
+            </div>
+            <p className="text-muted-foreground flex items-center gap-2 font-medium text-xs sm:text-sm">
+              <Key className="w-3.5 h-3.5 text-forest/40" />
+              Create a new project under <strong>{activeTeam.name}</strong>
+            </p>
+          </div>
+        </div>
+        <CreateProjectForm teamId={activeTeamId} />
+      </div>
+    );
+  }
+
+  const activeProjectId = sp.project ? parseInt(sp.project) : userProjects[0]?.id;
+  const activeProject = userProjects.find(p => p.id === activeProjectId);
+
+  if (!activeProject) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 text-center">
+        <div className="p-6 bg-sage/20 rounded-full animate-pulse">
+          <ShieldAlert className="w-12 h-12 text-forest" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-3xl font-heading font-bold text-forest tracking-tight">No Projects Yet</h2>
+          <p className="text-muted-foreground text-lg max-w-sm font-medium">
+            Create your first project to organize API keys under {activeTeam.name}.
+          </p>
+        </div>
+        <Link
+          href={`/dashboard?team=${activeTeamId}&project=new`}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-green-dark hover:bg-green-dark/90 text-white font-semibold rounded-full transition-all"
+        >
+          <Plus className="w-5 h-5" />
+          Create Project
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      {/* Team Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border-light">
         <div className="space-y-1">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+            <Link href={`/dashboard?team=${activeTeamId}`} className="hover:text-forest transition-colors">{activeTeam.name}</Link>
+            <span>/</span>
+            <span className="text-forest font-medium">{activeProject.name}</span>
+          </div>
           <div className="flex items-center gap-3">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-forest tracking-tight">{activeTeam.name}</h2>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-forest tracking-tight">{activeProject.name}</h2>
             <Badge className="bg-sage text-forest font-bold px-3 text-xs">Vault</Badge>
           </div>
           <p className="text-muted-foreground flex items-center gap-2 font-medium text-xs sm:text-sm">
             <Key className="w-3.5 h-3.5 text-forest/40" />
-            Vault ID: <code className="bg-forest/5 px-1.5 py-0.5 rounded text-forest font-mono">T-{activeTeam.id.toString().padStart(3, '0')}</code>
+            Project ID: <code className="bg-forest/5 px-1.5 py-0.5 rounded text-forest font-mono">P-{activeProject.id.toString().padStart(3, '0')}</code>
           </p>
         </div>
 
@@ -109,14 +139,11 @@ export default async function DashboardPage(props: DashboardPageProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left: Key Creation Form */}
         <div className="lg:col-span-1">
-          <ApiKeyForm teamId={activeTeam.id} />
+          <ApiKeyForm projectId={activeProject.id} />
         </div>
-
-        {/* Right: API Keys Table */}
         <div className="lg:col-span-2">
-          <ApiKeyTable key={activeTeam.id} teamId={activeTeam.id} />
+          <ApiKeyTable key={activeProject.id} projectId={activeProject.id} />
         </div>
       </div>
     </div>
