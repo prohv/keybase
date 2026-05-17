@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { UserPlus, Copy, Check, X } from 'lucide-react';
+import { UserPlus, Copy, Check } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -9,7 +9,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 
 interface InviteButtonProps {
     teamCode: string;
@@ -29,7 +28,7 @@ export function InviteButton({ teamCode }: InviteButtonProps) {
             <DialogTrigger asChild>
                 <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-forest bg-white border border-border-light rounded-full hover:bg-bg-muted hover:border-sage transition-all">
                     <UserPlus className="w-3.5 h-3.5" />
-                    Invite
+                    Invite Members
                 </button>
             </DialogTrigger>
             <DialogContent className="max-w-sm bg-white border-border-light">
