@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Key, Plus, Loader2, Copy, Check, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -45,21 +45,21 @@ export function TokenManager({ projectId }: TokenManagerProps) {
     const [copied, setCopied] = useState(false);
     const [revoking, setRevoking] = useState<number | null>(null);
 
+    const fetchTokens = useCallback(async () => {
+        try {
+            const res = await fetch(`/api/token/list?projectId=${projectId}`);
+            const data = await res.json();
+            if (data.success) setTokens(data.data);
+        } catch { /* ignore */ }
+    }, [projectId]);
+
     useEffect(() => {
         if (open) {
             setRawToken(null);
             setName('');
             fetchTokens();
         }
-    }, [open]);
-
-    async function fetchTokens() {
-        try {
-            const res = await fetch(`/api/token/list?projectId=${projectId}`);
-            const data = await res.json();
-            if (data.success) setTokens(data.data);
-        } catch { /* ignore */ }
-    }
+    }, [open, fetchTokens]);
 
     async function handleCreate(e: React.FormEvent) {
         e.preventDefault();

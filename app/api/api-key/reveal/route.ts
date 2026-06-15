@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     const plaintext = decrypt(currentKey.encryptedKey, currentKey.iv);
 
     return Response.json({ success: true, data: plaintext });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('Reveal API key API error:', error);
     return Response.json({ error: 'Failed to reveal API key' }, { status: 500 });

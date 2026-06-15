@@ -32,9 +32,9 @@ export async function deleteTeamsAction(teamIds: number[]) {
             return { error: 'You are not a member of one or more selected teams' };
         }
 
-        await db.delete(apiKeys).where(inArray(apiKeys.teamId, authorizedIds as any));
-        await db.delete(teamMembers).where(inArray(teamMembers.teamId, authorizedIds as any));
-        await db.delete(teams).where(inArray(teams.id, authorizedIds as any));
+        await db.delete(apiKeys).where(inArray(apiKeys.teamId, authorizedIds));
+        await db.delete(teamMembers).where(inArray(teamMembers.teamId, authorizedIds));
+        await db.delete(teams).where(inArray(teams.id, authorizedIds));
 
         revalidatePath('/dashboard');
         return { success: true };

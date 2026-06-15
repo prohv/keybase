@@ -23,7 +23,7 @@ export async function fetchApiKeys(projectId: number, page: number = 1, limit: n
         const offset = (page - 1) * limit;
 
         const keys = await db.query.apiKeys.findMany({
-            where: eq(apiKeys.projectId, projectId as any),
+            where: eq(apiKeys.projectId, projectId),
             columns: { id: true, name: true, createdBy: true, createdAt: true },
             orderBy: [desc(apiKeys.createdAt)],
             limit,
@@ -33,7 +33,7 @@ export async function fetchApiKeys(projectId: number, page: number = 1, limit: n
         const totalResult = await db
             .select({ value: count() })
             .from(apiKeys)
-            .where(eq(apiKeys.projectId, projectId as any));
+            .where(eq(apiKeys.projectId, projectId));
 
         const total = Number(totalResult[0].value);
         const hasMore = offset + keys.length < total;

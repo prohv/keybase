@@ -50,8 +50,9 @@ export async function createApiKeyAction(formData: FormData) {
 
         revalidatePath('/dashboard');
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('[CreateAction] EXCEPTION:', error);
-        return { error: error.message || 'Failed to securely store API key' };
+        const message = error instanceof Error ? error.message : 'Failed to securely store API key';
+        return { error: message };
     }
 }

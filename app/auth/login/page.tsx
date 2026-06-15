@@ -9,11 +9,9 @@ import { AuthDivider } from '@/components/ui/auth-divider';
 import { OAuthButton } from '@/components/ui/oauth-button';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 export default function LoginPage() {
-  const router = useRouter();
   const loginMutation = useLoginMutation();
 
   async function handleSubmit(formData: FormData) {

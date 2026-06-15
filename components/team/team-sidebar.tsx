@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, PlusCircle, UserPlus, AlertTriangle, Loader2, X, ChevronLeft, ChevronRight, FolderKanban } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -59,16 +59,25 @@ export function TeamSidebar({ teams, currentUserId }: TeamSidebarProps) {
     const isCreator = activeTeam ? activeTeam.createdBy === currentUserId : false;
     const activeProjectId = searchParams.get('project') || null;
 
-    const fetchProjects = useCallback(async () => {
-        if (!activeTeamId) return;
-        try {
-            const res = await fetch(`/api/project/list?teamId=${activeTeamId}`);
-            const data = await res.json();
-            if (data.success) setProjects(data.data);
-        } catch { /* ignore */ }
-    }, [activeTeamId]);
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-    useEffect(() => { fetchProjects(); }, [fetchProjects, searchParams.toString()]);
+    useEffect(() => {
+        let active = true;
+        async function load() {
+            if (!activeTeamId) return;
+            try {
+                const res = await fetch(`/api/project/list?teamId=${activeTeamId}`);
+                const data = await res.json();
+                if (data.success && active) {
+                    setProjects(data.data);
+                }
+            } catch { /* ignore */ }
+        }
+        load();
+        return () => {
+            active = false;
+        };
+    }, [activeTeamId, refreshTrigger]);
 
     const totalProjectPages = Math.ceil(projects.length / PER_PAGE);
     const displayProjects = showAllProjects
@@ -87,15 +96,6 @@ export function TeamSidebar({ teams, currentUserId }: TeamSidebarProps) {
         setSelectedIds(new Set());
         setProjectSelecting(false);
         setSelectedProjectIds(new Set());
-    }
-
-    function toggleSelect(id: number) {
-        setSelectedIds((prev) => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-            return next;
-        });
     }
 
     function toggleProjectSelect(id: number) {
@@ -141,7 +141,7 @@ export function TeamSidebar({ teams, currentUserId }: TeamSidebarProps) {
                 setShowDialog(false);
                 cancelAllSelection();
                 toast.success(`Deleted ${selectedProjectIds.size} project(s)`);
-                fetchProjects();
+                setRefreshTrigger(prev => prev + 1);
             } catch {
                 setDeleting(false);
                 toast.error('Failed to delete projects');

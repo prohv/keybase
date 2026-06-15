@@ -5,7 +5,6 @@ import { teams, teamMembers } from '@/src/db/schema';
 import { getCurrentUser } from '@/lib/jwt';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
-import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
 const joinTeamSchema = z.object({

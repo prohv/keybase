@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       success: true,
       apiKey: { id: newKey.id, name: newKey.name, projectId: newKey.projectId, createdAt: newKey.createdAt },
     });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('Create API key API error:', error);
     return Response.json({ error: 'Failed to securely store API key' }, { status: 500 });

@@ -3,7 +3,6 @@ import { db } from '@/src/db';
 import { teams, teamMembers } from '@/src/db/schema';
 import { verifyToken } from '@/lib/jwt';
 import { z } from 'zod';
-import { eq } from 'drizzle-orm';
 import crypto from 'crypto';
 
 const createTeamSchema = z.object({
@@ -25,7 +24,7 @@ export async function POST(req: NextRequest) {
     let user;
     try {
       user = verifyToken(token);
-    } catch (error) {
+    } catch {
       return Response.json(
         { error: 'Invalid or expired token' },
         { status: 401 }
@@ -72,7 +71,7 @@ export async function POST(req: NextRequest) {
       success: true,
       team: newTeam,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Create team API error:', error);
     return Response.json(
       { error: 'Internal server error' },

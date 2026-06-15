@@ -107,7 +107,7 @@ export function ApiKeyTable({ projectId }: ApiKeyTableProps) {
             } else {
                 toast.error(res.error || 'Failed to decrypt key');
             }
-        } catch (err) {
+        } catch {
             toast.error('Unexpected error during decryption');
         } finally {
             setRevealingId(null);
@@ -127,7 +127,24 @@ export function ApiKeyTable({ projectId }: ApiKeyTableProps) {
             .join('\n');
 
         try {
-            const handle = await (window as any).showSaveFilePicker({
+            const win = window as unknown as {
+                showSaveFilePicker?: (options?: {
+                    suggestedName?: string;
+                    types?: Array<{
+                        description: string;
+                        accept: Record<string, string[]>;
+                    }>;
+                }) => Promise<{
+                    createWritable: () => Promise<{
+                        write: (content: string) => Promise<void>;
+                        close: () => Promise<void>;
+                    }>;
+                }>;
+            };
+            if (!win.showSaveFilePicker) {
+                throw new Error('FallbackToBlob');
+            }
+            const handle = await win.showSaveFilePicker({
                 suggestedName: '.env',
                 types: [{
                     description: 'Environment File',
@@ -138,8 +155,8 @@ export function ApiKeyTable({ projectId }: ApiKeyTableProps) {
             await writable.write(envContent);
             await writable.close();
             toast.success('Downloaded .env file');
-        } catch (err: any) {
-            if (err?.name === 'AbortError') return;
+        } catch (err) {
+            if (err && typeof err === 'object' && 'name' in err && err.name === 'AbortError') return;
             const blob = new Blob([envContent], { type: 'application/octet-stream' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -398,7 +415,7 @@ export function ApiKeyTable({ projectId }: ApiKeyTableProps) {
                             Confirm Deletion
                         </DialogTitle>
                         <DialogDescription className="font-medium">
-                            Are you sure you want to delete <span className="font-semibold text-forest">"{deleteCandidate?.name}"</span>?
+                            Are you sure you want to delete <span className="font-semibold text-forest">&quot;{deleteCandidate?.name}&quot;</span>?
                             This action is <span className="text-destructive font-semibold">irreversible</span>.
                         </DialogDescription>
                     </DialogHeader>

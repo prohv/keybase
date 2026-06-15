@@ -26,7 +26,7 @@ export async function getApiKeysAction(teamId: number) {
 
         // Fetch keys for the team (only return safe fields)
         const keys = await db.query.apiKeys.findMany({
-            where: eq(apiKeys.teamId, teamId as any),
+            where: eq(apiKeys.teamId, teamId),
             columns: {
                 id: true,
                 name: true,

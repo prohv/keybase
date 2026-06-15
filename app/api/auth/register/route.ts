@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
         role: newUser.role,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Register API error:', error);
     return Response.json(
       { error: 'Internal server error' },

@@ -6,7 +6,7 @@ import { createTeamAction } from './action';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card2, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Plus, Loader2, ArrowLeft, Shield } from 'lucide-react';
 import Link from 'next/link';
@@ -27,7 +27,7 @@ export default function CreateTeamPage() {
                 router.push('/dashboard');
                 router.refresh();
             }
-        } catch (err) {
+        } catch {
             toast.error('An unexpected error occurred while creating the team.');
         } finally {
             setLoading(false);
@@ -47,7 +47,7 @@ export default function CreateTeamPage() {
                     </div>
                     <CardTitle className="text-3xl font-bold text-forest tracking-tight">Create a Vault</CardTitle>
                     <CardDescription className="text-muted-foreground text-lg">
-                        Initialize a new secure space for your team's secrets.
+                        Initialize a new secure space for your team&apos;s secrets.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

@@ -1,5 +1,3 @@
-import { NextRequest } from 'next/server';
-
 // OpenAPI specification
 const openApiSpec = {
   openapi: '3.0.0',
@@ -518,6 +516,6 @@ const openApiSpec = {
   },
 };
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   return Response.json(openApiSpec);
 }

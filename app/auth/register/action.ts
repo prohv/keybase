@@ -6,7 +6,6 @@ import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { signToken } from '@/lib/jwt';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { eq } from 'drizzle-orm';
 
 const schema = z.object({
@@ -55,9 +54,6 @@ export async function registerAction(formData: FormData) {
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   });
-
-  console.log('[RegisterAction] auth_token cookie set successfully');
-  console.log('[RegisterAction] Token preview:', token.substring(0, 20) + '...');
 
   return { success: true, redirectTo: '/dashboard' };
 }

@@ -28,7 +28,7 @@ export async function DELETE(req: NextRequest) {
     await db.delete(apiKeys).where(eq(apiKeys.id, keyId));
 
     return Response.json({ success: true, message: 'API key deleted successfully' });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('Delete API key API error:', error);
     return Response.json({ error: 'Failed to delete API key' }, { status: 500 });

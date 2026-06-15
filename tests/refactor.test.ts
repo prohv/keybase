@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from "bun:test";
 import { NextRequest } from "next/server";
 import { db } from "@/src/db";
 import { users, teams, teamMembers, projects, apiKeys, sessionTokens } from "@/src/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 import { POST as registerPost } from "@/app/api/auth/register/route";
 import { POST as loginPost } from "@/app/api/auth/login/route";
@@ -227,7 +227,7 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
       body: JSON.stringify({ keyId: apiKeyId }),
     });
     const res = await revealApiKeyPost(req);
-    const body = await res.json();
+    await res.json();
 
     expect(res.status).toBe(403);
   }, TEST_TIMEOUT);

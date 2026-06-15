@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     });
 
     return Response.json({ success: true, data: keys });
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof AuthError) return Response.json({ error: error.message }, { status: error.status });
     console.error('List API keys API error:', error);
     return Response.json({ error: 'Failed to fetch API keys' }, { status: 500 });
