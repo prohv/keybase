@@ -17,7 +17,7 @@ export function handleRouteError(error: unknown) {
     return Response.json({ error: error.message }, { status: error.status });
   }
   
-  const err = error as { message?: string; status?: number; code?: string };
+  const err = error as { name?: string; message?: string; status?: number; code?: string };
   // Check for common JWT errors from jsonwebtoken library
   if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
     return Response.json({ error: 'Invalid or expired token' }, { status: 401 });

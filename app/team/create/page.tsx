@@ -20,9 +20,9 @@ export default function CreateTeamPage() {
         try {
             const result = await createTeamAction(formData);
 
-            if (result.error) {
+            if ('error' in result) {
                 toast.error(result.error);
-            } else if (result.teamCode) {
+            } else if ('teamCode' in result) {
                 toast.success('Team vault created successfully!');
                 router.push('/dashboard');
                 router.refresh();

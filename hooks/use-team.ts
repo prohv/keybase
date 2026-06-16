@@ -12,7 +12,7 @@ export function useJoinTeamMutation() {
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const result = await joinTeamAction(formData);
-      if (result.error) {
+      if ('error' in result) {
         throw new Error(result.error);
       }
       return result;
