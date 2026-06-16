@@ -12,7 +12,7 @@ export function useApiKeys(projectId: number) {
         queryKey: ['api-keys', projectId],
         queryFn: async ({ pageParam = 1 }) => {
             const result = await fetchApiKeys(projectId, pageParam, 4);
-            if (result.error) throw new Error(result.error);
+            if ('error' in result) throw new Error(result.error);
             return result;
         },
         initialPageParam: 1,
@@ -27,7 +27,7 @@ export function useUserTeams() {
         queryKey: ['user-teams'],
         queryFn: async () => {
             const result = await fetchUserTeams();
-            if (result.error) throw new Error(result.error);
+            if ('error' in result) throw new Error(result.error);
             return result.teams;
         },
         staleTime: 1000 * 60 * 5,
@@ -41,7 +41,7 @@ export function useCreateApiKeyMutation(projectId: number) {
         mutationFn: async (formData: FormData) => {
             formData.set('projectId', String(projectId));
             const result = await createApiKeyAction(formData);
-            if (result.error) throw new Error(result.error);
+            if ('error' in result) throw new Error(result.error);
             return result;
         },
         onSuccess: () => {
@@ -60,7 +60,7 @@ export function useDeleteApiKeyMutation(projectId: number) {
     return useMutation({
         mutationFn: async (keyId: number) => {
             const result = await deleteApiKeyAction(keyId);
-            if (result.error) throw new Error(result.error);
+            if ('error' in result) throw new Error(result.error);
             return result;
         },
         onSuccess: () => {
@@ -77,7 +77,7 @@ export function useExportKeysMutation() {
     return useMutation({
         mutationFn: async (projectId: number) => {
             const result = await exportKeysAction(projectId);
-            if (result.error) throw new Error(result.error);
+            if ('error' in result) throw new Error(result.error);
             return result;
         },
         onError: (error: Error) => {

@@ -13,6 +13,7 @@ export function UserAvatar({ initials, avatarUrl }: UserAvatarProps) {
   if (avatarUrl && !imgError) {
     return (
       <div className="h-9 w-9 rounded-full overflow-hidden border-2 border-sage shadow-sm shrink-0 bg-sage">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={avatarUrl}
           alt={initials}

@@ -61,7 +61,7 @@ export function FeatureGrid() {
           <div className="absolute left-[19px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-green-pale to-green-dark rounded-full" />
 
           <div className="space-y-0">
-            {features.map((feature, i) => {
+            {features.map((feature) => {
               const Icon = feature.icon;
               return (
                 <div key={feature.title} className="relative pl-14 pb-8 last:pb-0 group">

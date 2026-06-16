@@ -1,5 +1,3 @@
-import { NextRequest } from 'next/server';
-
 // Swagger UI HTML template
 const swaggerHtml = `
 <!DOCTYPE html>
@@ -23,7 +21,7 @@ const swaggerHtml = `
 </html>
 `;
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   return new Response(swaggerHtml, {
     headers: {
       'Content-Type': 'text/html',

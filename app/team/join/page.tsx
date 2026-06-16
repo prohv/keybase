@@ -1,16 +1,14 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useJoinTeamMutation } from '@/hooks/use-team';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card2, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card2, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { UserPlus, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 export default function JoinTeamPage() {
-  const router = useRouter();
   const joinTeamMutation = useJoinTeamMutation();
 
   async function handleSubmit(formData: FormData) {

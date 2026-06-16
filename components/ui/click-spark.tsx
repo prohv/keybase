@@ -11,6 +11,13 @@ interface ClickSparkProps {
   extraScale?: number;
 }
 
+interface Spark {
+  x: number;
+  y: number;
+  startTime: number;
+  rotation: number;
+}
+
 export const ClickSpark: React.FC<ClickSparkProps> = ({
   sparkColor = "#99BC85",
   sparkSize = 10,
@@ -20,7 +27,7 @@ export const ClickSpark: React.FC<ClickSparkProps> = ({
   extraScale = 1.0,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sparksRef = useRef<any[]>([]);
+  const sparksRef = useRef<Spark[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -76,7 +83,7 @@ export const ClickSpark: React.FC<ClickSparkProps> = ({
     };
 
     window.addEventListener("mousedown", handleClick);
-    let animationId = requestAnimationFrame(animate);
+    const animationId = requestAnimationFrame(animate);
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);

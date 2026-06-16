@@ -12,14 +12,14 @@ export function useLoginMutation() {
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const result = await loginAction(formData);
-      if (result?.error) {
+      if (result && 'error' in result) {
         throw new Error(result.error);
       }
       return result;
     },
     onSuccess: (data) => {
       toast.success('Successfully logged in!');
-      if (data?.redirectTo) {
+      if (data && 'redirectTo' in data) {
         router.push(data.redirectTo);
       }
     },
@@ -35,14 +35,14 @@ export function useRegisterMutation() {
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const result = await registerAction(formData);
-      if (result?.error) {
+      if (result && 'error' in result) {
         throw new Error(result.error);
       }
       return result;
     },
     onSuccess: (data) => {
       toast.success('Account created successfully!');
-      if (data?.redirectTo) {
+      if (data && 'redirectTo' in data) {
         router.push(data.redirectTo);
       }
     },
