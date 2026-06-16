@@ -1,7 +1,11 @@
 import { AppError } from './errors';
 import { AuthError } from '@/lib/jwt';
+import { ZodError } from 'zod';
 
 export function handleActionError(error: unknown): { error: string } {
+  if (error instanceof ZodError) {
+    return { error: error.issues[0].message };
+  }
   if (error instanceof AppError) {
     return { error: error.message };
   }

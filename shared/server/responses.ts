@@ -1,11 +1,15 @@
 import { AppError } from './errors';
 import { AuthError } from '@/lib/jwt';
+import { ZodError } from 'zod';
 
 export function jsonOk(data: Record<string, unknown> = {}) {
   return Response.json({ success: true, ...data });
 }
 
 export function handleRouteError(error: unknown) {
+  if (error instanceof ZodError) {
+    return Response.json({ error: error.issues[0].message }, { status: 400 });
+  }
   if (error instanceof AppError) {
     return Response.json({ error: error.message }, { status: error.status });
   }
