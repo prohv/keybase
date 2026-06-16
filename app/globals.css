@@ -50,7 +50,7 @@
   --color-pale-sage: #E4EFE7;
   --color-cream: #FAFAFA;
   --color-beige: #FAF1E6;
-  --color-forest: #1B2A1E;
+  --color-forest: #2D3E31;
   --color-olive: #3E5443;
   --color-slate: #475569;
   --color-muted-text: #64748B;
@@ -80,22 +80,22 @@
 :root {
   --radius: 0.75rem;
   --background: #FAFAFA;
-  --foreground: #1B2A1E;
+  --foreground: #2D3E31;
   --card: #FAF1E6;
-  --card-foreground: #1B2A1E;
+  --card-foreground: #2D3E31;
   --popover: #FAF1E6;
-  --popover-foreground: #1B2A1E;
+  --popover-foreground: #2D3E31;
   --primary: #99BC85;
   --primary-foreground: #FDFAF6;
   --secondary: #E4EFE7;
-  --secondary-foreground: #1B2A1E;
+  --secondary-foreground: #2D3E31;
   --muted: #E4EFE7;
   --muted-foreground: #3E5443;
   --accent: #99BC85;
-  --accent-foreground: #1B2A1E;
+  --accent-foreground: #2D3E31;
   --destructive: #DC2626;
-  --border: #1B2A1E / 0.15;
-  --input: #1B2A1E / 0.15;
+  --border: #2D3E31 / 0.1;
+  --input: #2D3E31 / 0.1;
   --ring: #99BC85;
 
   --color-shadow: rgba(40, 70, 30, 0.12);
