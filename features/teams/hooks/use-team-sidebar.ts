@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { deleteTeamsAction } from '@/app/team/delete/action';
+import { deleteProjectAction } from '@/app/project/delete/action';
 
 interface Team {
   id: number;
@@ -112,20 +113,20 @@ export function useTeamSidebar(teams: Team[], currentUserId?: number) {
     } else {
       try {
         for (const pid of selectedProjectIds) {
-          await fetch('/api/project/delete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ projectId: pid }),
-          });
+          const res = await deleteProjectAction(pid);
+          if (res && 'error' in res) {
+            throw new Error(res.error);
+          }
         }
         setDeleting(false);
         setShowDialog(false);
         cancelAllSelection();
         toast.success(`Deleted ${selectedProjectIds.size} project(s)`);
         setRefreshTrigger(prev => prev + 1);
-      } catch {
+      } catch (err) {
         setDeleting(false);
-        toast.error('Failed to delete projects');
+        const errMsg = err instanceof Error ? err.message : 'Failed to delete projects';
+        toast.error(errMsg);
       }
     }
   }

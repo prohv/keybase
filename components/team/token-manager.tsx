@@ -14,6 +14,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { createTokenAction } from '@/app/token/create/action';
+import { revokeTokenAction } from '@/app/token/revoke/action';
 
 interface Token {
     id: number;
@@ -66,18 +68,18 @@ export function TokenManager({ projectId }: TokenManagerProps) {
         if (!name.trim()) return;
         setCreating(true);
         try {
-            const res = await fetch('/api/token/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ projectId, name: name.trim(), expiryDays: expiryDays || null }),
+            const res = await createTokenAction({
+                projectId,
+                name: name.trim(),
+                expiryDays: expiryDays || null,
             });
-            const data = await res.json();
-            if (data.success) {
-                setRawToken(data.token);
+            if (res && 'success' in res && res.success && res.token) {
+                setRawToken(res.token);
                 toast.success('Token created');
                 fetchTokens();
             } else {
-                toast.error(data.error || 'Failed to create token');
+                const errMsg = res && 'error' in res ? res.error : 'Failed to create token';
+                toast.error(errMsg);
             }
         } catch {
             toast.error('Failed to create token');
@@ -89,17 +91,13 @@ export function TokenManager({ projectId }: TokenManagerProps) {
     async function handleRevoke(tokenId: number) {
         setRevoking(tokenId);
         try {
-            const res = await fetch('/api/token/revoke', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ tokenId }),
-            });
-            const data = await res.json();
-            if (data.success) {
+            const res = await revokeTokenAction(tokenId);
+            if (res && 'success' in res && res.success) {
                 toast.success('Token revoked');
                 fetchTokens();
             } else {
-                toast.error(data.error || 'Failed to revoke');
+                const errMsg = res && 'error' in res ? res.error : 'Failed to revoke';
+                toast.error(errMsg);
             }
         } catch {
             toast.error('Failed to revoke');

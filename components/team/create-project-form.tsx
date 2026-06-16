@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card2, CardContent } from '@/components/ui/card';
 import { Loader2, FolderKanban } from 'lucide-react';
+import { createProjectAction } from '@/app/project/create/action';
 
 interface CreateProjectFormProps {
     teamId: number;
@@ -23,18 +24,14 @@ export function CreateProjectForm({ teamId }: CreateProjectFormProps) {
         const name = (new FormData(e.currentTarget)).get('name') as string;
 
         try {
-            const res = await fetch('/api/project/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ teamId, name }),
-            });
-            const data = await res.json();
-            if (data.success) {
+            const res = await createProjectAction({ teamId, name });
+            if (res && 'success' in res && res.success && res.project) {
                 toast.success('Project created');
-                router.push(`/dashboard?team=${teamId}&project=${data.project.id}`);
+                router.push(`/dashboard?team=${teamId}&project=${res.project.id}`);
                 router.refresh();
             } else {
-                toast.error(data.error || 'Failed to create project');
+                const errMsg = res && 'error' in res ? res.error : 'Failed to create project';
+                toast.error(errMsg);
             }
         } catch {
             toast.error('Failed to create project');
