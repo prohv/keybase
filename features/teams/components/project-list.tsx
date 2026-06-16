@@ -91,7 +91,7 @@ export function ProjectList({
                     >
                       <FolderKanban
                         className={`w-4 h-4 shrink-0 ${
-                          selectedProjectIds.has(p.id) ? 'text-green-dark' : 'text-forest/40'
+                          selectedProjectIds.has(p.id) ? 'text-green-dark' : 'text-forest/65'
                         }`}
                       />
                       <span className="truncate flex-1">{p.name}</span>
@@ -105,7 +105,7 @@ export function ProjectList({
                     >
                       <FolderKanban
                         className={`w-4 h-4 shrink-0 ${
-                          isActive ? 'text-green-dark' : 'text-forest/40 group-hover:text-forest'
+                          isActive ? 'text-green-dark' : 'text-forest/65 group-hover:text-forest'
                         }`}
                       />
                       <span className="truncate flex-1">{p.name}</span>
@@ -114,6 +114,42 @@ export function ProjectList({
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {projects.length > PER_PAGE && (
+          <div className="mt-2 px-1">
+            {showAllProjects ? (
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => setProjectPage((prev) => Math.max(1, prev - 1))}
+                  disabled={projectPage <= 1}
+                  className="p-1 text-forest/65 hover:text-forest disabled:opacity-20"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[11px] font-medium text-forest/65">
+                  {projectPage} / {totalProjectPages}
+                </span>
+                <button
+                  onClick={() => setProjectPage((prev) => Math.min(totalProjectPages, prev + 1))}
+                  disabled={projectPage >= totalProjectPages}
+                  className="p-1 text-forest/65 hover:text-forest disabled:opacity-20"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setShowAllProjects(true);
+                  setProjectPage(2);
+                }}
+                className="w-full text-left px-3 py-1.5 text-xs text-muted-foreground hover:text-forest font-medium transition-colors"
+              >
+                +{remaining} more
+              </button>
+            )}
           </div>
         )}
 
@@ -138,42 +174,6 @@ export function ProjectList({
               <Trash2 className="w-3 h-3 mr-1" />
               Delete ({selectedProjectIds.size})
             </Button>
-          </div>
-        )}
-
-        {projects.length > PER_PAGE && (
-          <div className="mt-2 px-1">
-            {showAllProjects ? (
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={() => setProjectPage((prev) => Math.max(1, prev - 1))}
-                  disabled={projectPage <= 1}
-                  className="p-1 text-forest/40 hover:text-forest disabled:opacity-20"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                <span className="text-[11px] font-medium text-forest/40">
-                  {projectPage} / {totalProjectPages}
-                </span>
-                <button
-                  onClick={() => setProjectPage((prev) => Math.min(totalProjectPages, prev + 1))}
-                  disabled={projectPage >= totalProjectPages}
-                  className="p-1 text-forest/40 hover:text-forest disabled:opacity-20"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => {
-                  setShowAllProjects(true);
-                  setProjectPage(2);
-                }}
-                className="w-full text-left px-3 py-1.5 text-xs text-muted-foreground hover:text-forest font-medium transition-colors"
-              >
-                +{remaining} more
-              </button>
-            )}
           </div>
         )}
 

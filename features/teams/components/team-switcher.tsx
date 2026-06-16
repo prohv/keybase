@@ -35,7 +35,7 @@ export function TeamSwitcher({ teams, activeTeamId, onChange }: TeamSwitcherProp
           <DropdownMenuTrigger asChild>
             <button className="w-full px-3 py-2 text-sm font-medium text-forest bg-white border border-border-light rounded-lg focus:outline-none focus:border-sage cursor-pointer flex items-center justify-between select-none">
               <span className="truncate">{activeTeam?.name}</span>
-              <ChevronDown className="w-4 h-4 text-forest/40 shrink-0 ml-2" />
+              <ChevronDown className="w-4 h-4 text-forest/65 shrink-0 ml-2" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] bg-white border-border-light text-forest">

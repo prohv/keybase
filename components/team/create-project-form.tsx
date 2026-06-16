@@ -55,13 +55,24 @@ export function CreateProjectForm({ teamId }: CreateProjectFormProps) {
                             className="bg-white border-border-light focus:border-green-dark focus:ring-green-dark/20 rounded-lg"
                         />
                     </div>
-                    <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-green-dark hover:bg-green-dark/90 text-white font-heading font-semibold text-sm rounded-full"
-                    >
-                        {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating...</> : <><FolderKanban className="w-4 h-4 mr-2" />Create Project</>}
-                    </Button>
+                    <div className="flex gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            disabled={loading}
+                            onClick={() => router.push(`/dashboard?team=${teamId}`)}
+                            className="flex-1 border-border-light rounded-full text-forest"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            className="flex-1 bg-green-dark hover:bg-green-dark/90 text-white font-heading font-semibold text-sm rounded-full"
+                        >
+                            {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Creating...</> : <><FolderKanban className="w-4 h-4 mr-2" />Create Project</>}
+                        </Button>
+                    </div>
                 </form>
             </CardContent>
         </Card2>

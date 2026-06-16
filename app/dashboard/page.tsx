@@ -74,7 +74,7 @@ export default async function DashboardPage(props: DashboardPageProps) {
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-forest tracking-tight">New Project</h2>
             </div>
             <p className="text-muted-foreground flex items-center gap-2 font-medium text-xs sm:text-sm">
-              <Key className="w-3.5 h-3.5 text-forest/40" />
+              <Key className="w-3.5 h-3.5 text-forest/65" />
               Create a new project under <strong>{activeTeam.name}</strong>
             </p>
           </div>
@@ -124,7 +124,7 @@ export default async function DashboardPage(props: DashboardPageProps) {
             <Badge className="bg-sage text-forest font-bold px-3 text-xs">Vault</Badge>
           </div>
           <p className="text-muted-foreground flex items-center gap-2 font-medium text-xs sm:text-sm">
-            <Key className="w-3.5 h-3.5 text-forest/40" />
+            <Key className="w-3.5 h-3.5 text-forest/65" />
             Project ID: <code className="bg-forest/5 px-1.5 py-0.5 rounded text-forest font-mono">P-{activeProject.id.toString().padStart(3, '0')}</code>
           </p>
         </div>
