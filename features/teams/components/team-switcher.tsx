@@ -3,6 +3,13 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
 } from '@/components/ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 interface Team {
   id: number;
@@ -18,27 +25,33 @@ interface TeamSwitcherProps {
 }
 
 export function TeamSwitcher({ teams, activeTeamId, onChange }: TeamSwitcherProps) {
+  const activeTeam = teams.find((t) => t.id === activeTeamId) || teams[0];
+
   return (
     <SidebarGroup className="mt-2">
       <SidebarGroupLabel className="text-forest/60 font-medium px-4">Team</SidebarGroupLabel>
       <SidebarGroupContent className="p-2">
-        <select
-          value={activeTeamId}
-          onChange={(e) => onChange(parseInt(e.target.value))}
-          className="w-full px-3 py-2 text-sm font-medium text-forest bg-white border border-border-light rounded-lg focus:outline-none focus:border-sage cursor-pointer appearance-none"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right 8px center',
-            paddingRight: '28px',
-          }}
-        >
-          {teams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-full px-3 py-2 text-sm font-medium text-forest bg-white border border-border-light rounded-lg focus:outline-none focus:border-sage cursor-pointer flex items-center justify-between select-none">
+              <span className="truncate">{activeTeam?.name}</span>
+              <ChevronDown className="w-4 h-4 text-forest/40 shrink-0 ml-2" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] bg-white border-border-light text-forest">
+            {teams.map((t) => (
+              <DropdownMenuItem
+                key={t.id}
+                onClick={() => onChange(t.id)}
+                className={`cursor-pointer hover:bg-bg-muted focus:bg-bg-muted px-3 py-2 text-sm rounded-md transition-colors ${
+                  t.id === activeTeamId ? 'font-semibold bg-green-dark/5' : ''
+                }`}
+              >
+                {t.name}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </SidebarGroupContent>
     </SidebarGroup>
   );
