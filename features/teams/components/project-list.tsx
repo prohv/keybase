@@ -11,6 +11,7 @@ import {
   ChevronRight,
   PlusCircle,
   Trash2,
+  X,
 } from 'lucide-react';
 
 interface Project {
@@ -117,13 +118,22 @@ export function ProjectList({
         )}
 
         {projectSelecting && projects.length > 0 && (
-          <div className="mt-2 px-1">
+          <div className="mt-2 px-1 flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={cancelAllSelection}
+              className="flex-1 h-8 text-xs border-border-light"
+            >
+              <X className="w-3 h-3 mr-1" />
+              Cancel
+            </Button>
             <Button
               size="sm"
               variant="destructive"
               onClick={handleProjectDeleteClick}
               disabled={selectedProjectIds.size === 0}
-              className="w-full h-8 text-xs"
+              className="flex-1 h-8 text-xs bg-destructive hover:bg-destructive/90 text-white disabled:opacity-40"
             >
               <Trash2 className="w-3 h-3 mr-1" />
               Delete ({selectedProjectIds.size})
@@ -131,7 +141,7 @@ export function ProjectList({
           </div>
         )}
 
-        {projects.length > PER_PAGE && !projectSelecting && (
+        {projects.length > PER_PAGE && (
           <div className="mt-2 px-1">
             {showAllProjects ? (
               <div className="flex items-center justify-between">
