@@ -23,6 +23,5 @@ export function handleRouteError(error: unknown) {
     return Response.json({ error: 'Invalid or expired token' }, { status: 401 });
   }
 
-  console.error('[API Error]:', error);
   return Response.json({ error: 'Internal server error' }, { status: 500 });
 }
