@@ -14,6 +14,7 @@ import { POST as revealApiKeyPost } from "@/app/api/api-key/reveal/route";
 import { GET as listApiKeysGet } from "@/app/api/api-key/list/route";
 import { POST as createTokenPost } from "@/app/api/token/create/route";
 import { encrypt, decrypt } from "@/lib/encryption";
+import { SlidingWindowRateLimiter } from "@/lib/rate-limit";
 
 const TEST_TIMEOUT = 30000;
 
@@ -280,5 +281,35 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
 
     // Tampered IV/tag must fail
     expect(() => decrypt(encrypted, "AAAA:BBBB")).toThrow("Decryption operation failed");
+  });
+
+  it("should enforce sliding window rate limiting", () => {
+    const testLimiter = new SlidingWindowRateLimiter();
+    const prevEnv = process.env.NODE_ENV;
+    try {
+      // Temporarily simulate production environment
+      process.env.NODE_ENV = "production";
+
+      const key = "test-rate-limit-key";
+      // First 10 calls within 60s should succeed
+      for (let i = 0; i < 10; i++) {
+        const res = testLimiter.check(key, 10, 60_000);
+        expect(res.allowed).toBe(true);
+        expect(res.remaining).toBe(9 - i);
+      }
+
+      // 11th call should be blocked with retry-after
+      const blockedRes = testLimiter.check(key, 10, 60_000);
+      expect(blockedRes.allowed).toBe(false);
+      expect(blockedRes.remaining).toBe(0);
+      expect(blockedRes.retryAfterSec).toBeGreaterThan(0);
+
+      // Reset clears the counter
+      testLimiter.reset(key);
+      const afterReset = testLimiter.check(key, 10, 60_000);
+      expect(afterReset.allowed).toBe(true);
+    } finally {
+      process.env.NODE_ENV = prevEnv;
+    }
   });
 });
