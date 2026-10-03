@@ -44,7 +44,8 @@ export async function registerUser(input: RegisterInput) {
     throw new AppError('CONFLICT', 'Email already exists', 409);
   }
 
-  const passwordHash = await bcrypt.hash(input.password, 12);
+  const saltRounds = process.env.NODE_ENV === 'test' ? 4 : 12;
+  const passwordHash = await bcrypt.hash(input.password, saltRounds);
 
   const [newUser] = await db
     .insert(users)
