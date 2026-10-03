@@ -1,7 +1,7 @@
 import { describe, it, expect, afterAll } from "bun:test";
 import { NextRequest } from "next/server";
 import { db } from "@/src/db";
-import { users, teams, teamMembers, projects, apiKeys, sessionTokens } from "@/src/db/schema";
+import { users, teams, teamMembers, projects, apiKeys } from "@/src/db/schema";
 import { inArray } from "drizzle-orm";
 
 import { POST as registerPost } from "@/app/api/auth/register/route";
@@ -12,7 +12,6 @@ import { POST as createProjectPost } from "@/app/api/project/create/route";
 import { POST as createApiKeyPost } from "@/app/api/api-key/create/route";
 import { POST as revealApiKeyPost } from "@/app/api/api-key/reveal/route";
 import { GET as listApiKeysGet } from "@/app/api/api-key/list/route";
-import { POST as createTokenPost } from "@/app/api/token/create/route";
 import { encrypt, decrypt } from "@/lib/encryption";
 import { SlidingWindowRateLimiter } from "@/lib/rate-limit";
 import { middleware } from "@/middleware";
@@ -33,7 +32,6 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
   let teamCode = "";
   let projectId: number;
   let apiKeyId: number;
-  let sessionTokenString = "";
 
   const createdUserIds: number[] = [];
   const createdTeamIds: number[] = [];
@@ -43,7 +41,6 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
     // Cleanup in reverse dependency order
     if (createdProjectIds.length > 0) {
       await db.delete(apiKeys).where(inArray(apiKeys.projectId, createdProjectIds));
-      await db.delete(sessionTokens).where(inArray(sessionTokens.projectId, createdProjectIds));
       await db.delete(projects).where(inArray(projects.id, createdProjectIds));
     }
     if (createdTeamIds.length > 0) {
@@ -235,29 +232,11 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
     expect(res.status).toBe(403);
   }, TEST_TIMEOUT);
 
-  it("should create a session token and allow list access using it", async () => {
-    // Create session token
-    const tokenReq = new NextRequest("http://localhost/api/token/create", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token1}`,
-      },
-      body: JSON.stringify({ projectId, name: "CLI Token", expiryDays: 7 }),
-    });
-    const tokenRes = await createTokenPost(tokenReq);
-    const tokenBody = await tokenRes.json();
-
-    expect(tokenRes.status).toBe(200);
-    expect(tokenBody.success).toBe(true);
-    expect(tokenBody.token).toBeDefined();
-
-    sessionTokenString = tokenBody.token;
-
-    // Use session token to list keys
+  it("should allow authorized user to list project API keys", async () => {
     const listReq = new NextRequest(`http://localhost/api/api-key/list?projectId=${projectId}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${sessionTokenString}`,
+        Authorization: `Bearer ${token1}`,
       },
     });
     const listRes = await listApiKeysGet(listReq);

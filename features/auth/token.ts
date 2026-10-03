@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import { createHash } from 'node:crypto';
 
 const SECRET = process.env.JWT_SECRET!;
 if (!SECRET) throw new Error('JWT_SECRET missing');
@@ -20,8 +19,4 @@ export function signToken(payload: TokenPayload): string {
 
 export function verifyToken(token: string): TokenPayload {
   return jwt.verify(token, SECRET) as TokenPayload;
-}
-
-export function hashToken(input: string): string {
-  return createHash('sha256').update(input).digest('hex');
 }

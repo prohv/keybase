@@ -55,10 +55,9 @@ The app will be running at [http://localhost:3000](http://localhost:3000). Inter
 
 * **AES-256-GCM Encryption**: Keys are encrypted with a dedicated Initialization Vector (IV) and authentication tag (AEAD) before database persistence, preventing data tampering. Plaintext keys are never stored on disk.
 * **Team & Project Scoping**: Multi-tenant workspace model. Teams use 8-character hex codes for member invites, and keys are isolated within project vaults.
-* **CLI & CI/CD Access Tokens**: Generate scoped `kb_...` Bearer tokens with configurable expiration for automated pipelines. Stored as SHA-256 hashes.
 * **Single-Click `.env` Export**: Export all project keys directly into a `.env` file.
 * **Provider Auto-Detection**: Recognizes standard secret patterns (OpenAI, AWS, Anthropic, GCP, etc.) to display provider badges.
-* **Dual Auth Modes**: Email/password authentication or Google OAuth with unified session management (httpOnly cookies for web, Bearer tokens for API/CLI).
+* **Authentication**: Email/password authentication with bcrypt or Google OAuth with secure httpOnly session cookies.
 
 ---
 
