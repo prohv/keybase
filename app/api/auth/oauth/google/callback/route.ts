@@ -114,8 +114,7 @@ export async function GET(request: NextRequest) {
     response.cookies.delete('oauth_state');
 
     return response;
-  } catch (error) {
-    console.error('[OAuth Callback] Error:', error);
+  } catch {
     return NextResponse.redirect(`${origin}/auth/login?error=oauth_failed`);
   }
 }

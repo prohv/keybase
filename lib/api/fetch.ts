@@ -13,8 +13,7 @@ export async function fetchApiKeys(projectId: number, page: number = 1, limit: n
     try {
         const { keys, total, hasMore } = await listApiKeys(user.userId, projectId, page, limit);
         return { keys, page, hasMore, total };
-    } catch (error) {
-        console.error('Failed to fetch API keys:', error);
+    } catch {
         return { error: 'Failed to fetch API keys' };
     }
 }
@@ -28,8 +27,7 @@ export async function fetchUserTeams() {
     try {
         const userTeams = await listUserTeams(user.userId);
         return { teams: userTeams };
-    } catch (error) {
-        console.error('Failed to fetch user teams:', error);
+    } catch {
         return { error: 'Failed to fetch teams' };
     }
 }

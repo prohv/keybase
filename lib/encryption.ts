@@ -15,8 +15,6 @@ function getEncryptionKey(): Buffer {
     }
 
     const key = Buffer.from(keyBase64, 'base64');
-    console.log(`[Encryption] Raw Key length: ${keyBase64.length}, Decoded length: ${key.length}`);
-
     if (key.length < KEY_LENGTH) {
         throw new Error(`ENCRYPTION_KEY must be at least ${KEY_LENGTH} bytes when decoded from base64 (got ${key.length})`);
     }
@@ -42,8 +40,7 @@ export function encrypt(text: string): { encrypted: string; iv: string } {
             encrypted,
             iv: iv.toString('base64'),
         };
-    } catch (error) {
-        console.error('Encryption failed:', error);
+    } catch {
         throw new Error('Encryption operation failed');
     }
 }
@@ -66,8 +63,7 @@ export function decrypt(encrypted: string, ivBase64: string): string {
         decrypted += decipher.final('utf8');
 
         return decrypted;
-    } catch (error) {
-        console.error('Decryption failed:', error);
+    } catch {
         throw new Error('Decryption operation failed');
     }
 }

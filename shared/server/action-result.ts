@@ -18,6 +18,5 @@ export function handleActionError(error: unknown): { error: string } {
     return { error: 'Invalid or expired session' };
   }
 
-  console.error('[Action Error]:', error);
   return { error: 'An unexpected error occurred' };
 }
