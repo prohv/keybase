@@ -9,14 +9,9 @@ export async function GET(req: NextRequest) {
     const auth = await requireAuth(req);
     const { searchParams } = new URL(req.url);
 
-    let projectId: number;
-    if (auth.authType === 'session_token') {
-      projectId = auth.projectId!;
-    } else {
-      const p = parseInt(searchParams.get('projectId') || '');
-      if (!p) throw new AppError('BAD_REQUEST', 'projectId is required', 400);
-      projectId = p;
-    }
+    const p = parseInt(searchParams.get('projectId') || '');
+    if (!p) throw new AppError('BAD_REQUEST', 'projectId is required', 400);
+    const projectId = p;
 
     const { keys } = await listApiKeys(auth.userId, projectId, 1, 100);
     return jsonOk({ data: keys });
