@@ -13,6 +13,7 @@ import { POST as createApiKeyPost } from "@/app/api/api-key/create/route";
 import { POST as revealApiKeyPost } from "@/app/api/api-key/reveal/route";
 import { GET as listApiKeysGet } from "@/app/api/api-key/list/route";
 import { POST as createTokenPost } from "@/app/api/token/create/route";
+import { encrypt, decrypt } from "@/lib/encryption";
 
 const TEST_TIMEOUT = 30000;
 
@@ -265,4 +266,19 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
     expect(listBody.data.length).toBeGreaterThanOrEqual(1);
     expect(listBody.data[0].name).toBe("TEST_API_KEY");
   }, TEST_TIMEOUT);
+
+  it("should verify AES-256-GCM tamper resistance and authenticated encryption", () => {
+    const secret = "test-tamper-resistance-secret";
+    const { encrypted, iv } = encrypt(secret);
+
+    // Successful decrypt
+    expect(decrypt(encrypted, iv)).toBe(secret);
+
+    // Tampered ciphertext must fail authentication check
+    const tampered = encrypted.slice(0, -2) + (encrypted.endsWith("AA") ? "BB" : "AA");
+    expect(() => decrypt(tampered, iv)).toThrow("Decryption operation failed");
+
+    // Tampered IV/tag must fail
+    expect(() => decrypt(encrypted, "AAAA:BBBB")).toThrow("Decryption operation failed");
+  });
 });

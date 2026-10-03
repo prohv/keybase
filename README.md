@@ -53,7 +53,7 @@ The app will be running at [http://localhost:3000](http://localhost:3000). Inter
 
 ## Core Features
 
-* **AES-256-CBC Encryption**: Keys are encrypted with a dedicated Initialization Vector (IV) before database persistence. Plaintext keys are never stored on disk.
+* **AES-256-GCM Encryption**: Keys are encrypted with a dedicated Initialization Vector (IV) and authentication tag (AEAD) before database persistence, preventing data tampering. Plaintext keys are never stored on disk.
 * **Team & Project Scoping**: Multi-tenant workspace model. Teams use 8-character hex codes for member invites, and keys are isolated within project vaults.
 * **CLI & CI/CD Access Tokens**: Generate scoped `kb_...` Bearer tokens with configurable expiration for automated pipelines. Stored as SHA-256 hashes.
 * **Single-Click `.env` Export**: Export all project keys directly into a `.env` file.
@@ -139,7 +139,7 @@ For in-depth architecture patterns and guidelines, see [docs/architecture.md](do
 |----------|-------------|----------|
 | `DATABASE_URL` | PostgreSQL connection string | Yes |
 | `JWT_SECRET` | Secret key used for signing JWTs | Yes |
-| `ENCRYPTION_KEY` | Base64-encoded 32-byte key for AES-256-CBC | Yes |
+| `ENCRYPTION_KEY` | Base64-encoded 32-byte key for AES-256-GCM | Yes |
 | `OAUTH_CLIENT_ID` | Google OAuth Client ID | No (for OAuth) |
 | `OAUTH_CLIENT_SECRET` | Google OAuth Client Secret | No (for OAuth) |
 | `NEXT_PUBLIC_API_URL` | Canonical app URL (used in OAuth redirect URLs) | No |
