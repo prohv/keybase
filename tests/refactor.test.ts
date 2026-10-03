@@ -15,6 +15,7 @@ import { GET as listApiKeysGet } from "@/app/api/api-key/list/route";
 import { POST as createTokenPost } from "@/app/api/token/create/route";
 import { encrypt, decrypt } from "@/lib/encryption";
 import { SlidingWindowRateLimiter } from "@/lib/rate-limit";
+import { middleware } from "@/middleware";
 
 const TEST_TIMEOUT = 30000;
 
@@ -311,5 +312,38 @@ describe("KeyBase Refactoring Guardrails Suite", () => {
     } finally {
       process.env.NODE_ENV = prevEnv;
     }
+  });
+
+  it("should handle edge middleware route redirects properly", () => {
+    // 1. Unauthenticated request to /dashboard should redirect to /auth/login
+    const unauthReq = new NextRequest("http://localhost/dashboard");
+    const unauthRes = middleware(unauthReq);
+    expect(unauthRes.status).toBe(307);
+    expect(unauthRes.headers.get("location")).toBe("http://localhost/auth/login");
+
+    // 2. Unauthenticated request to /team/create should redirect with return param
+    const unauthTeamReq = new NextRequest("http://localhost/team/create");
+    const unauthTeamRes = middleware(unauthTeamReq);
+    expect(unauthTeamRes.status).toBe(307);
+    expect(unauthTeamRes.headers.get("location")).toContain("/auth/login?redirect=%2Fteam%2Fcreate");
+
+    // 3. Authenticated request to /dashboard should pass through
+    const authReq = new NextRequest("http://localhost/dashboard", {
+      headers: {
+        cookie: "auth_token=valid_test_token",
+      },
+    });
+    const authRes = middleware(authReq);
+    expect(authRes.status).toBe(200);
+
+    // 4. Authenticated request to /auth/login should redirect to /dashboard
+    const authLoginReq = new NextRequest("http://localhost/auth/login", {
+      headers: {
+        cookie: "auth_token=valid_test_token",
+      },
+    });
+    const authLoginRes = middleware(authLoginReq);
+    expect(authLoginRes.status).toBe(307);
+    expect(authLoginRes.headers.get("location")).toBe("http://localhost/dashboard");
   });
 });
