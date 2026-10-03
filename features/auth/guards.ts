@@ -1,16 +1,13 @@
 import { NextRequest } from 'next/server';
-import { db } from '@/src/db';
-import { sessionTokens, users } from '@/src/db/schema';
-import { eq, and, or, isNull, gt } from 'drizzle-orm';
 import { AppError } from '@/shared/server/errors';
-import { verifyToken, hashToken, TokenPayload } from './token';
+import { verifyToken, TokenPayload } from './token';
 import { getSessionCookie } from './session';
 
 export interface AuthContext {
   userId: number;
   email: string;
   role: 'user' | 'admin';
-  authType: 'jwt' | 'session_token';
+  authType: 'jwt';
   projectId?: number;
   name?: string | null;
   avatarUrl?: string | null;
@@ -39,30 +36,6 @@ export async function verifyAuth(req: NextRequest | Request): Promise<AuthContex
 
   if (!raw) {
     throw new AuthError('Missing or invalid Authorization header', 401);
-  }
-
-  if (raw.startsWith('kb_')) {
-    const hash = hashToken(raw);
-    const st = await db.query.sessionTokens.findFirst({
-      where: and(
-        eq(sessionTokens.tokenHash, hash),
-        or(isNull(sessionTokens.expiresAt), gt(sessionTokens.expiresAt, new Date()))
-      ),
-    });
-    if (!st) throw new AuthError('Invalid or expired session token', 401);
-
-    await db.update(sessionTokens).set({ lastUsedAt: new Date() }).where(eq(sessionTokens.id, st.id));
-
-    const user = await db.query.users.findFirst({ where: eq(users.id, st.userId) });
-    if (!user) throw new AuthError('Token user not found', 401);
-
-    return {
-      userId: st.userId,
-      email: user.email,
-      role: user.role as 'user' | 'admin',
-      authType: 'session_token',
-      projectId: st.projectId!,
-    };
   }
 
   try {

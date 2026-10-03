@@ -38,18 +38,6 @@ export const projects = pgTable('projects', {
   createdAt: timestamp('created_at').defaultNow(),
 });
 
-export const sessionTokens = pgTable('session_tokens', {
-  id: serial('id').primaryKey(),
-  userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  projectId: integer('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  tokenHash: text('token_hash').notNull().unique(),
-  scopes: text('scopes').notNull().$type<'read' | 'read_write'>().default('read'),
-  expiresAt: timestamp('expires_at'),
-  lastUsedAt: timestamp('last_used_at'),
-  createdAt: timestamp('created_at').defaultNow(),
-});
-
 export const apiKeys = pgTable('api_keys', {
   id: serial('id').primaryKey(),
   name: text('name').notNull(),

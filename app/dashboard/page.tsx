@@ -9,7 +9,6 @@ import { ShieldAlert, Key, UserPlus, Plus } from 'lucide-react';
 import { ApiKeyForm } from '@/components/api-key/api-key-form';
 import { ApiKeyTable } from '@/components/api-key/api-key-table';
 import { CreateProjectForm } from '@/components/team/create-project-form';
-import { TokenManager } from '@/components/team/token-manager';
 import { InviteButton } from '@/components/team/invite-button';
 import Link from 'next/link';
 
@@ -132,7 +131,6 @@ export default async function DashboardPage(props: DashboardPageProps) {
         {activeTeam && (
           <div className="flex items-center gap-2">
             {activeTeam.createdBy === user.userId && <InviteButton teamCode={activeTeam.teamCode} />}
-            <TokenManager projectId={activeProject.id} />
           </div>
         )}
       </div>
